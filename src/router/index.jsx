@@ -13,7 +13,7 @@ const Router = () => {
   return (
     <Stack.Navigator>
           <Stack.Screen
-              name="Home"
+              name="Dealer"
               component={Home}
               options={{headerShown: true}}
           />

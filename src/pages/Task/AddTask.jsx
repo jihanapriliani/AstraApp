@@ -4,13 +4,15 @@ import {SafeAreaView, StyleSheet, TextInput, Text, Button, Alert} from 'react-na
 import { getDatabase, ref, push, child } from "firebase/database";
 import FIREBASE from '../../config/firebase';
 
-const AddTask = ({navigation}) => {
+const AddTask = ({route, navigation}) => {
   const [taskTitle, setTaskTitle] = useState('');
   const [findings, setFindings] = useState('');
   const [repairActivity, setRepairActivity] = useState('');
   const [dealerLoc, setDealerLoc] = useState('');
   const [findingLoc, setFindingLoc] = useState('');
   const [PICDealer, setPICDealer] = useState('');
+
+  const { dealer_id, dealer } = route.params;
 
   const handleAddButtonClicked = () => {
     if(taskTitle && findings && repairActivity && dealerLoc && findingLoc && PICDealer) {
@@ -26,10 +28,10 @@ const AddTask = ({navigation}) => {
           PICDealer
         };
 
-        push(ref(database, 'Tasks'), tasks)
+        push(ref(database, `Tasks/${dealer_id}`), tasks)
           .then(data => {
             Alert.alert('Success', 'Data Tugas Berhasil Ditambahkan!');
-            navigation.replace('ListTasks');
+            navigation.replace('ListTasks', { key: dealer_id, dealer: dealer});
           })
           .catch(err => console.log(err))
 
