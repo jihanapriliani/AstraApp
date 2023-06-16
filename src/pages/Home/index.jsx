@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import ButtonGroup from '../../components/ButtonGroup';
 import Cards from '../../components/Cards';
 
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faMugSaucer } from '@fortawesome/free-solid-svg-icons/faMugSaucer'
 
 const Home = (props) => {
   const {navigation} = props;
@@ -19,8 +17,6 @@ const Home = (props) => {
         
           <Cards navigation={navigation} selectedCity={selectedCity} />
 
-
-       
       </View>
 
       <View style={styles.navGroup}>

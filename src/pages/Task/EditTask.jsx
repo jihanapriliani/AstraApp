@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {SafeAreaView, StyleSheet, TextInput, Text, Button, Alert, View, ScrollView} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import DatePicker from '../../components/DatePicker';
 
-import { getDatabase, ref, push, child } from "firebase/database";
-import {  getStorage, ref as refStorage, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getDatabase, ref, push, child, set, get, update} from "firebase/database";
+import {  getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import FIREBASE from '../../config/firebase';
 
 
@@ -12,7 +12,6 @@ import ImageUpload from '../../components/ImageUpload';
 
 const AddTask = ({route, navigation}) => {
   const [taskTitle, setTaskTitle] = useState('');
-  const [status, setstatus] = useState('');
   const [repairActivity, setRepairActivity] = useState('');
   const [PICDealer, setPICDealer] = useState('');
   
@@ -24,17 +23,48 @@ const AddTask = ({route, navigation}) => {
   const [selectedStatus, setSelectedStatus] = useState("onprogress");
   const [uploadedImage, setUploadedImage] = useState(null);
 
-  const { dealer_id, dealer } = route.params;
+  const [ data, setData ] = useState({});
+  const [ url, setUrl ] = useState("")
+  
+  const { dealer_id, task_id, image_id } = route.params;
+  
+  useEffect(() => {
+    const database = ref(getDatabase(FIREBASE));
+    get(child(database, `Tasks/${dealer_id}/${task_id}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        setData(snapshot.val());
+      } else {
+        console.log("No data available");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
 
-  function formatDate(date) {
+        setTaskTitle(data.taskTitle);
+        setRepairActivity(data.repairActivity);
+        setPICDealer(data.PICDealer);
+        setSelectedStatus(data.status);    
+    }, [image_id])
+
+    useEffect(() => {
+        const storage = getStorage(FIREBASE);
+        const fileName = image_id.uri.substring(image_id.uri.lastIndexOf('/') + 1);
+        const reference = storageRef(storage, `images/${fileName}`);
+        getDownloadURL(reference).then(url => setUrl(url));
+
+        setUploadedImage({uri: url});
+    }, [])
+
+
+
+ function formatDate(date) {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   }
 
-
-  const handleAddButtonClicked = () => {
+  const handleEditButtonClicked = () => {
     if(taskTitle) {
       // && status && repairActivity && uploadedImage != null && PICDealer && findingDate != {} && dueDate != {}
         const database = getDatabase(FIREBASE);
@@ -51,10 +81,9 @@ const AddTask = ({route, navigation}) => {
           httpUrlImage: findingImage
         };
 
-
-        push(ref(database, `Tasks/${dealer_id}`), tasks)
+        update(ref(database, `Tasks/${dealer_id}/${task_id}`), tasks)
           .then(data => {
-            Alert.alert('Success', 'Data Tugas Berhasil Ditambahkan!');
+            Alert.alert('Success', 'Data Tugas Berhasil Diubah!');
             
             uploadImage();
 
@@ -67,13 +96,13 @@ const AddTask = ({route, navigation}) => {
     }
   }
 
-  console.log(findingImage);
+  
 
   const uploadImage = async () => {
     try {
       const storage = getStorage(FIREBASE);
       const fileName = uploadedImage.uri.substring(uploadedImage.uri.lastIndexOf('/') + 1);
-      const storageRef = refStorage(storage, 'images/' + fileName);
+      const storageRef = storageRef(storage, 'images/' + fileName);
 
       //convert image to array of bytes
       const img = await fetch(uploadedImage.uri);
@@ -165,8 +194,8 @@ const AddTask = ({route, navigation}) => {
 
       <SafeAreaView  style={styles.addButtonView}>
         <Button
-          onPress={handleAddButtonClicked}
-          title="Add Task"
+          onPress={handleEditButtonClicked}
+          title="Perbarui Tugas"
           accessibilityLabel="Add this new task"
         />
       </SafeAreaView>

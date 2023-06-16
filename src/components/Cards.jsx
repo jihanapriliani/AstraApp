@@ -32,7 +32,7 @@ const Cards = props => {
         <View>
             {
                 
-                Object.keys(dealers).map((key, index) =>  (
+                Object.keys(dealers).map((key, index) =>  index < 4 && (
                     <TouchableHighlight key={key} style={styles.cardWrapper} onPress={() => navigation.navigate('ListTasks', { key: key, dealer: dealers[key] })}>
                         <View>
                             <View style={styles.cardContent}>
