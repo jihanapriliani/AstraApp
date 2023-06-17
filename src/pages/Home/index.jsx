@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, Button, TouchableHighlight, useColorScheme } from 'react-native'
+import { Text, StyleSheet, View, Button, TouchableHighlight, useColorScheme, ScrollView } from 'react-native'
 import React, { useState } from 'react';
 
 import ButtonGroup from '../../components/ButtonGroup';
@@ -18,14 +18,15 @@ const Home = (props) => {
   
   return (
     <>
+    <ScrollView>
       <View style={styles.home}>
-        <ButtonGroup selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
+          <ButtonGroup selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
 
-         
-        
-          <Cards navigation={navigation} selectedCity={selectedCity} />
+          
+            <Cards navigation={navigation} selectedCity={selectedCity} />
 
       </View>
+    </ScrollView>
 
       <View style={styles.navGroup}>
           <TouchableHighlight style={styles.dealerButton}>
