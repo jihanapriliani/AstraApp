@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { Button, StyleSheet, View, Text } from 'react-native'
+import { Button, StyleSheet, View, Text, useColorScheme } from 'react-native'
 import DatePicker from 'react-native-date-picker'
 
 export default (props) => {
+  const isDarkMode = useColorScheme() === 'dark';
+
   const {selectedDate, setSelectedDate} = props;
   const [open, setOpen] = useState(false);
 
@@ -15,7 +17,7 @@ export default (props) => {
 
   return (
     <View style={{ margin: 20 }}>
-      <Text style={{ marginBottom: 10 }}>
+      <Text style={{ marginBottom: 10, color: isDarkMode ? 'gray' : 'gray', }}>
         {formatDate(selectedDate)}
       </Text>
       <Button title="Pilih Tanggal" onPress={() => setOpen(true)} />

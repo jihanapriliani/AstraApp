@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
 
-import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight} from 'react-native';
+import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, useColorScheme} from 'react-native';
 
 import { getDatabase, ref, child, get } from "firebase/database";
 import FIREBASE from '../../config/firebase';
 
 
 const ListTasks = ({route, navigation}) => {
+  const isDarkMode = useColorScheme() === 'dark';
+
   const { key , dealer } = route.params;
 
   const [tasks, setTasks] = useState("");
@@ -22,6 +24,39 @@ const ListTasks = ({route, navigation}) => {
     console.error(error);
   });
 
+  const styles = StyleSheet.create({
+    cityButton : {
+      display: 'flex',
+      padding: 40
+    },
+  
+  
+    cardTitle: {
+      fontSize: 16,
+      padding: 5,
+      color: isDarkMode ? 'black' : 'black',
+    },
+  
+    cardWrapper: {
+      marginHorizontal: 20,
+      marginVertical: 10,
+      height: 150,
+      borderRadius: 20,
+      backgroundColor: "#417CC2",
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+  
+    cardContent: {
+      borderRadius: 10,
+      width: '80%',
+      height: '50%',
+      backgroundColor: "#F8F8F8"
+    }
+  
+  })
+
   
 
 
@@ -31,7 +66,7 @@ const ListTasks = ({route, navigation}) => {
         <Text>{dealer}</Text>
         {
           Object.keys(tasks).length === 1 ? (
-            <Text>Belum Ada Data Tugas pada Dealer Ini</Text>
+            <Text style={{  color: isDarkMode ? 'gray' : 'gray', textAlign: 'center' }}>Belum Ada Data Tugas pada Dealer Ini</Text>
           ) : (
             <ScrollView style={{flexGrow: 1}}>
                 <View>
@@ -74,36 +109,6 @@ const ListTasks = ({route, navigation}) => {
   )
 }
 
-const styles = StyleSheet.create({
-  cityButton : {
-    display: 'flex',
-    padding: 40
-  },
 
-
-  cardTitle: {
-    fontSize: 16,
-    padding: 5
-  },
-
-  cardWrapper: {
-    marginHorizontal: 20,
-    marginVertical: 10,
-    height: 150,
-    borderRadius: 20,
-    backgroundColor: "#417CC2",
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-
-  cardContent: {
-    borderRadius: 10,
-    width: '80%',
-    height: '50%',
-    backgroundColor: "#F8F8F8"
-  }
-
-})
 
 export default ListTasks

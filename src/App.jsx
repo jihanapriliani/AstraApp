@@ -9,7 +9,7 @@ import putDealersToFirebase from './data/dealers'
 import Router from './router';
 
 const App = () => {
-  console.disableYellowBox = true;
+  // console.disableYellowBox = true;
   putCitiesToFirebase();
   putDealersToFirebase();
   

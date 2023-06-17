@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {SafeAreaView, StyleSheet, TextInput, Text, Button, Alert, View, ScrollView} from 'react-native';
+import {SafeAreaView, StyleSheet, TextInput, Text, Button, Alert, View, ScrollView, useColorScheme} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import DatePicker from '../../components/DatePicker';
 
@@ -11,6 +11,9 @@ import FIREBASE from '../../config/firebase';
 import ImageUpload from '../../components/ImageUpload';
 
 const AddTask = ({route, navigation}) => {
+  const isDarkMode = useColorScheme() === 'dark';
+
+
   const [taskTitle, setTaskTitle] = useState('');
   const [status, setstatus] = useState('');
   const [repairActivity, setRepairActivity] = useState('');
@@ -110,6 +113,58 @@ const AddTask = ({route, navigation}) => {
 
   }
 
+  const styles = StyleSheet.create({
+    view: {
+      color: "black",
+      backgroundColor: "#fff",
+      position: 'relative',
+      height: '100%',
+      paddingBottom: 100
+    },
+  
+    input: {
+      height: 40,
+      margin: 20,
+      marginBottom: 0,
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: "lightgray",
+      padding: 10,
+      color: isDarkMode ? 'gray' : 'gray',
+    },
+  
+    inputTextArea: {
+      height: 100,
+      margin: 20,
+      textAlignVertical: 'top',
+      marginBottom: 0,
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: "lightgray",
+      padding: 10,
+      color: isDarkMode ? 'gray' : 'gray',
+    },
+  
+    label: {
+      margin: 20,
+      marginBottom: -12,
+      color: isDarkMode ? 'gray' : 'gray',
+    },
+  
+    labelDate: {
+      margin: 20,
+      marginBottom: -10,
+      color: isDarkMode ? 'gray' : 'gray',
+    },
+  
+    addButtonView: {
+      position:'absolute',
+      bottom: 10,
+      right: 10
+    }
+    
+  });
+
 
   return (
     <ScrollView>
@@ -125,7 +180,7 @@ const AddTask = ({route, navigation}) => {
       <Text style={styles.label}>Status</Text>
           <Picker
               selectedValue={selectedStatus}
-              style={{ height: 50, width: 250, marginLeft: 10 }}
+              style={{ height: 50, width: 250, marginLeft: 10, color: isDarkMode ? 'gray' : 'gray', backgroundColor: isDarkMode ? 'lightgray' : 'lightgray', marginTop: 20, marginLeft: 20, borderRadius: 20,  }}
               onValueChange={(itemValue, itemIndex) => setSelectedStatus(itemValue)}
           >
             <Picker.Item label="On Progress" value="onprogress"/>
@@ -177,52 +232,6 @@ const AddTask = ({route, navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  view: {
-    color: "black",
-    backgroundColor: "#fff",
-    position: 'relative',
-    height: '100%',
-    paddingBottom: 100
-  },
 
-  input: {
-    height: 40,
-    margin: 20,
-    marginBottom: 0,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "lightgray",
-    padding: 10,
-  },
-
-  inputTextArea: {
-    height: 100,
-    margin: 20,
-    textAlignVertical: 'top',
-    marginBottom: 0,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "lightgray",
-    padding: 10,
-  },
-
-  label: {
-    margin: 20,
-    marginBottom: -12
-  },
-
-  labelDate: {
-    margin: 20,
-    marginBottom: -10
-  },
-
-  addButtonView: {
-    position:'absolute',
-    bottom: 10,
-    right: 10
-  }
-  
-});
 
 export default AddTask;

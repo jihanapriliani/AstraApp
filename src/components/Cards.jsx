@@ -1,10 +1,12 @@
-import {StyleSheet, View, TouchableHighlight, Text, ScrollView, Alert} from 'react-native';
+import {StyleSheet, View, TouchableHighlight, Text, ScrollView, Alert, useColorScheme} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
 import {getDatabase, ref, get, child} from 'firebase/database';
 import FIREBASE from '../config/firebase';
 
 const Cards = props => {
+  const isDarkMode = useColorScheme() === 'dark';
+
   const { selectedCity, navigation } = props;
   const [dealers, setDealers] = useState({});
 
@@ -25,6 +27,69 @@ const Cards = props => {
       });
   }, [selectedCity]);
 
+  const styles = StyleSheet.create({
+
+    cardTitle: {
+      fontSize: 16,
+      padding: 5,
+      fontWeight: '700',
+      width: 250,
+      color: isDarkMode ? 'black' : 'black',
+    },
+  
+    cardWrapper: {
+      marginHorizontal: 20,
+      marginVertical: 10,
+      height: 130,
+      borderRadius: 20,
+      backgroundColor: "#417CC2",
+      display: 'flex',
+      paddingTop: 15,
+      // justifyContent: 'center',
+      alignItems: 'center'
+    },
+  
+    cardContent: {
+      borderRadius: 10,
+      width: 280,
+      height: 70,
+      backgroundColor: "#F8F8F8",
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingLeft: 10
+      // justifyContent: 'center'
+    },
+
+    cirle: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      backgroundColor: "#D9D9D9"
+    },
+
+    dotContainer: {
+      height: 20,
+      width: 30,
+      backgroundColor: 'white',
+      marginRight: 5,
+      marginTop: 10,
+      fontSize: 20,
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 10,
+    },
+
+    dot : {
+      fontSize: 20,
+      lineHeight: 15,
+      color: '#417CC2',
+      fontWeight: 'bold',
+    }
+  });
+
   
   
   return( 
@@ -33,16 +98,25 @@ const Cards = props => {
             {
                 
                 Object.keys(dealers).map((key, index) =>  index < 4 && (
-                    <TouchableHighlight key={key} style={styles.cardWrapper} onPress={() => navigation.navigate('ListTasks', { key: key, dealer: dealers[key] })}>
+                    <TouchableHighlight  activeOpacity={0.8}
+                    underlayColor="#417CC2" key={key} style={styles.cardWrapper} onPress={() => navigation.navigate('ListTasks', { key: key, dealer: dealers[key] })}>
                         <View>
                             <View style={styles.cardContent}>
+                              <View style={styles.cirle}></View>
                                 <Text style={styles.cardTitle}>
                                     {dealers[key]}
                                 </Text>
                             </View>
                 
-                            <View>
-                                <Text>Nama Ketua Dealer {index + 1}</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={{ marginLeft: 5, marginTop: 10 }}>Nama Ketua Dealer {index + 1}</Text>
+
+                                <View style={styles.dotContainer}>
+                                  <Text style={styles.dot}>
+                                    ...
+                                  </Text>
+
+                                </View>
                             </View>
                         </View>
                     </TouchableHighlight>
@@ -53,30 +127,6 @@ const Cards = props => {
   );
 };
 
-const styles = StyleSheet.create({
 
-  cardTitle: {
-    fontSize: 16,
-    padding: 5
-  },
-
-  cardWrapper: {
-    marginHorizontal: 20,
-    marginVertical: 10,
-    height: 150,
-    borderRadius: 20,
-    backgroundColor: "#417CC2",
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-
-  cardContent: {
-    borderRadius: 10,
-    width: '80%',
-    height: '50%',
-    backgroundColor: "#F8F8F8"
-  }
-});
 
 export default Cards;

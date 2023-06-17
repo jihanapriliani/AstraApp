@@ -1,6 +1,7 @@
 import { StyleSheet, View, TouchableHighlight, Text, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
+
 import { getDatabase, ref, get, child } from "firebase/database";
 import FIREBASE from '../config/firebase';
 
@@ -29,7 +30,8 @@ import FIREBASE from '../config/firebase';
             <View style={styles.buttonGroup}>
                 {cities.map(city => (
                     <View key={city.id} style={[styles.button, selectedCity === city.id && { backgroundColor: '#FDCA40' }]}>
-                        <TouchableHighlight onPress={() => setSelectedCity(city.id)}>
+                        <TouchableHighlight activeOpacity={0.8}
+                    underlayColor="#FDCA40" onPress={() => setSelectedCity(city.id)}>
                             <Text style={styles.text}>
                                 {city.city}
                             </Text>
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
 
     text: {
         textAlign: 'center',
-        color: '#000'
+        color: '#000',
     }
 
 

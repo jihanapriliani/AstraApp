@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {SafeAreaView, StyleSheet, TextInput, Text, Button, Alert, Image, ScrollView} from 'react-native';
+import {SafeAreaView, StyleSheet, TextInput, Text, Button, Alert, Image, ScrollView, useColorScheme} from 'react-native';
 
 import { getDatabase, ref, get, child, remove } from "firebase/database";
 import { getStorage, getDownloadURL, ref as storageRef} from 'firebase/storage';
 import FIREBASE from '../../config/firebase';
 
 const DetailTask = ({route, navigation}) => {
- 
+  const isDarkMode = useColorScheme() === 'dark';
   const { dealer_id, task_id, image_id } = route.params;
   const [ data, setData] = useState({});
 
@@ -55,6 +55,69 @@ const DetailTask = ({route, navigation}) => {
   const handleEditButtonClicked = () => {
     navigation.navigate('EditTask', {dealer_id: dealer_id, task_id: task_id, image_id: image_id})
   }
+
+  const styles = StyleSheet.create({
+    view: {
+      color: "black",
+      backgroundColor: "#fff",
+      position: 'relative',
+      height: '100%',
+      paddingBottom: 50
+    },
+  
+    input: {
+      height: 40,
+      margin: 20,
+      marginBottom: 0,
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: "lightgray",
+      padding: 10,
+      color: isDarkMode ? 'gray' : 'gray',
+    },
+  
+    inputTextArea: {
+      height: 100,
+      margin: 20,
+      textAlignVertical: 'top',
+      marginBottom: 0,
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: "lightgray",
+      padding: 10,
+      color: isDarkMode ? 'gray' : 'gray',
+    },
+  
+  
+    label: {
+      margin: 20,
+      marginBottom: -12,
+      color: isDarkMode ? 'gray' : 'gray',
+    },
+  
+    editButtonView: {
+      position:'absolute',
+      bottom: 10,
+      right: 10
+    },
+  
+    delButtonView: {
+      position:'absolute',
+      bottom: 10,
+      right: 130,
+    },
+  
+    imageBox: {
+      width: 300,
+      height: 200,
+      marginTop: 20,
+      marginLeft: 20,
+    },
+  
+  
+    
+  });
+  
 
   return (
     <ScrollView>
@@ -128,63 +191,5 @@ const DetailTask = ({route, navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  view: {
-    color: "black",
-    backgroundColor: "#fff",
-    position: 'relative',
-    height: '100%',
-    paddingBottom: 50
-  },
-
-  input: {
-    height: 40,
-    margin: 20,
-    marginBottom: 0,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "lightgray",
-    padding: 10,
-  },
-
-  inputTextArea: {
-    height: 100,
-    margin: 20,
-    textAlignVertical: 'top',
-    marginBottom: 0,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "lightgray",
-    padding: 10,
-  },
-
-
-  label: {
-    margin: 20,
-    marginBottom: -12
-  },
-
-  editButtonView: {
-    position:'absolute',
-    bottom: 10,
-    right: 10
-  },
-
-  delButtonView: {
-    position:'absolute',
-    bottom: 10,
-    right: 130,
-  },
-
-  imageBox: {
-    width: 300,
-    height: 200,
-    marginTop: 20,
-    marginLeft: 20,
-  },
-
-
-  
-});
 
 export default DetailTask;

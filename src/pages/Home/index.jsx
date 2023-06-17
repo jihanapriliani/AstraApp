@@ -1,34 +1,42 @@
-import { Text, StyleSheet, View, Button, TouchableHighlight } from 'react-native'
+import { Text, StyleSheet, View, Button, TouchableHighlight, useColorScheme } from 'react-native'
 import React, { useState } from 'react';
 
 import ButtonGroup from '../../components/ButtonGroup';
 import Cards from '../../components/Cards';
 
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
+import { faBoxArchive } from '@fortawesome/free-solid-svg-icons/faBoxArchive'
+
 
 const Home = (props) => {
+  const isDarkMode = useColorScheme() === 'dark';
   const {navigation} = props;
   const [selectedCity, setSelectedCity] = useState("C03");
+
+  const [active, setActive] = useState("dealer");
   
   return (
     <>
       <View style={styles.home}>
         <ButtonGroup selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
 
+         
         
           <Cards navigation={navigation} selectedCity={selectedCity} />
 
       </View>
 
       <View style={styles.navGroup}>
-          <TouchableHighlight style={styles.activePage}>
-            <Text style={{ color: '#fff' }}>
+          <TouchableHighlight style={styles.dealerButton}>
+            <Text style={{ color: active === "dealer" ? 'white' : 'black', backgroundColor: active === "dealer" ? '#1455A3' : 'white',}}>
               Dealer
             </Text>
           </TouchableHighlight>
 
           <TouchableHighlight style={styles.profileButton}>
-            <Text>
-              Profile
+            <Text style={{ color: isDarkMode ? 'black' : 'black', }}>
+              <FontAwesomeIcon icon={faUser} color='#1455A3' />
             </Text>
           </TouchableHighlight>
       </View>
@@ -71,7 +79,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  activePage: {
+  dealerButton: {
     flex: 1,
     backgroundColor: '#1455A3',
     height: '80%',
