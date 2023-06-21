@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, useColorScheme} from 'react-native';
 
@@ -12,6 +12,43 @@ const ListTasks = ({route, navigation}) => {
   const { key , dealer } = route.params;
 
   const [tasks, setTasks] = useState({});
+  const [allStatus, setAllStatus] = useState({ onprogress: 0, idle: 0, drop: 0, done: 0,});
+
+  useEffect(() => {
+    const data  = {
+      onprogress: 0,
+      idle: 0,
+      drop: 0,
+      done: 0,
+    };
+
+
+    Object.keys(tasks).map((task_key, index) => { 
+      if(tasks[task_key].status == "onprogress") {
+        data["onprogress"] += 1;
+      } 
+
+      if(tasks[task_key].status == "idle") {
+        data["idle"] += 1;
+      } 
+
+      if(tasks[task_key].status == "drop") {
+        data["drop"] += 1;
+      } 
+
+      if(tasks[task_key].status == "done") {
+        data["done"] += 1;
+      } 
+    })
+
+    setAllStatus(data);
+  }, [tasks])
+
+  const getStatusFraction = () => {
+    return allStatus["onprogress"] + allStatus["idle"] + allStatus["drop"] + allStatus["done"];
+  }
+
+
 
   const database = ref(getDatabase(FIREBASE));
   get(child(database, `Tasks/${key}`)).then((snapshot) => {
@@ -138,14 +175,14 @@ const ListTasks = ({route, navigation}) => {
   return (
   <>
     <ScrollView>
-      <View style={{ display: 'flex', justifyContent: 'center', }}>
+      <View style={{ display: 'flex', justifyContent: 'center', paddingBottom: 100 }}>
             <Text style={{  color: isDarkMode ? 'black' : 'black', marginLeft: 20, marginVertical: 20, fontSize: 24, width: '85%', fontWeight: '600' }}>{dealer}</Text>
             
-            <View style={{ width: '85%', height: 5, marginHorizontal: 20, display: 'flex', 'flexDirection': 'row' }}>
-                <View style={{ flex: 1, backgroundColor: "#AED45C" }}></View>
-                <View style={{ flex: 1, backgroundColor: "#417CC2" }}></View>
-                <View style={{ flex: 1, backgroundColor: "#FDCA40" }}></View>
-                <View style={{ flex: 1, backgroundColor: "#DD2C32" }}></View>
+            <View style={{ width: '85%', height: 5, marginHorizontal: 20, marginVertical: 15, display: 'flex', 'flexDirection': 'row' }}>
+                <View style={{ flex: (allStatus["done"] || 0), backgroundColor: "#AED45C" }}></View>
+                <View style={{ flex: (allStatus["onprogress"] || 0), backgroundColor: "#417CC2" }}></View>
+                <View style={{ flex: (allStatus["idle"] || 0), backgroundColor: "#FDCA40" }}></View>
+                <View style={{ flex: (allStatus["drop"] || 0), backgroundColor: "#DD2C32" }}></View>
             </View>
 
             {

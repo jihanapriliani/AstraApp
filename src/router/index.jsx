@@ -10,6 +10,7 @@ import ListTasks from '../pages/Task/ListTasks';
 import AddTask from '../pages/Task/AddTask';
 import DetailTask from '../pages/Task/DetailTask';
 import EditTask from '../pages/Task/EditTask';
+import Profile from '../pages/Home/Profile';
 
 const Router = () => {
   return (
@@ -19,6 +20,13 @@ const Router = () => {
               component={Home}
               options={{headerShown: true}}
           />
+
+          <Stack.Screen 
+            name='Profile'
+            component={Profile}
+            options={{headerShown: true}}
+          />
+
           <Stack.Screen
             name="AddTask"
             component={AddTask}

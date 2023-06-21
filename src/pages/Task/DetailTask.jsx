@@ -181,7 +181,7 @@ const DetailTask = ({route, navigation}) => {
       <SafeAreaView  style={styles.delButtonView}>
         <Button
           onPress={handleEditButtonClicked}
-          title="Edit Task"
+          title="Edit Progress"
           accessibilityLabel="Add this new task"
         />
       </SafeAreaView>

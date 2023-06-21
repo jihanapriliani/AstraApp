@@ -30,12 +30,12 @@ const Home = (props) => {
 
       <View style={styles.navGroup}>
           <TouchableHighlight style={styles.dealerButton}>
-            <Text style={{ color: active === "dealer" ? 'white' : 'black', backgroundColor: active === "dealer" ? '#1455A3' : 'white',}}>
+            <Text style={{ color: active === "dealer" ? 'white' : 'black', backgroundColor: 'transparent'}}>
               Dealer
             </Text>
           </TouchableHighlight>
 
-          <TouchableHighlight style={styles.profileButton}>
+          <TouchableHighlight style={styles.profileButton} onPress={() => navigation.navigate('Profile')}>
             <Text style={{ color: isDarkMode ? 'black' : 'black', }}>
               <FontAwesomeIcon icon={faUser} color='#1455A3' />
             </Text>
@@ -48,6 +48,7 @@ const Home = (props) => {
 const styles = StyleSheet.create({
   home: {
     position: 'relative',
+    paddingBottom: 100,
   },
 
   cityButton : {
@@ -95,9 +96,13 @@ const styles = StyleSheet.create({
 
   profileButton: {
     flex: 1,
+    height: '80%',
+    borderRadius: 20,
+    marginHorizontal: 10,
+    marginVertical: 20,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   }
 
 })

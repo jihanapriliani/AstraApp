@@ -65,7 +65,7 @@ const AddTask = ({route, navigation}) => {
   }
 
   const handleEditButtonClicked = () => {
-    if(taskTitle) {
+    if(taskTitle || data.taskTitle) {
       // && status && repairActivity && uploadedImage != null && PICDealer && findingDate != {} && dueDate != {}
         const database = getDatabase(FIREBASE);
 
@@ -76,10 +76,29 @@ const AddTask = ({route, navigation}) => {
           repairActivity,
           PICDealer,
           uploadedImage,
-          findingDate: formatDate(findingDate),
-          dueDate: formatDate(dueDate),
-          httpUrlImage: findingImage
+          findingDate: data.findingDate,
+          dueDate: data.dueDate,
         };
+
+        const history = {
+          taskTitle: data.taskTitle,
+          status: selectedStatus,
+          repairActivity: data.repairActivity,
+          PICDealer: data.PICDealer,
+          uploadedImage: data.uploadedImage,
+          findingDate: data.findingDate,
+          dueDate: data.dueDate,
+          activityProgress: repairActivity,
+          progressImage:  uploadedImage,
+          progressDate: formatDate(findingDate),
+          progressPIC: PICDealer,
+        }
+
+        push(ref(database, `HistoryTasks/${dealer_id}`), history)
+        .then(data => {
+          Alert.alert('Success', 'Data Tugas Berhasil Ditambahkan!');
+        })
+        .catch(err => console.log(err))
 
         update(ref(database, `Tasks/${dealer_id}/${task_id}`), tasks)
           .then(data => {
@@ -192,68 +211,66 @@ const AddTask = ({route, navigation}) => {
 
 
   return (
-    <ScrollView>
-      <SafeAreaView style={styles.view}>
-        <Text style={styles.label}>Nama Temuan</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setTaskTitle}
-          value={taskTitle}
-          placeholder='Tuliskan nama tugas'
-        />
+    <>
+      <ScrollView>
+        <SafeAreaView style={styles.view}>
+          <Text style={styles.label}>Nama Temuan</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setTaskTitle}
+            value={data.taskTitle}
+            placeholder='Tuliskan nama tugas'
+          />
 
-      <Text style={styles.label}>Status</Text>
-          <Picker
-              selectedValue={selectedStatus}
-              style={{ height: 50, width: 250, marginLeft: 10, color: isDarkMode ? 'gray' : 'gray', backgroundColor: isDarkMode ? 'lightgray' : 'lightgray', marginTop: 20, marginLeft: 20, borderRadius: 20 }}
-              onValueChange={(itemValue, itemIndex) => setSelectedStatus(itemValue)}
-          >
-            <Picker.Item label="On Progress" value="onprogress"/>
-            <Picker.Item label="Done" value="done" />
-            <Picker.Item label="Idle" value="idle" />
-            <Picker.Item label="Drop" value="drop" />
-          </Picker>
+        <Text style={styles.label}>Status</Text>
+            <Picker
+                selectedValue={selectedStatus}
+                style={{ height: 50, width: 250, marginLeft: 10, color: isDarkMode ? 'gray' : 'gray', backgroundColor: isDarkMode ? 'lightgray' : 'lightgray', marginTop: 20, marginLeft: 20, borderRadius: 20 }}
+                onValueChange={(itemValue, itemIndex) => setSelectedStatus(itemValue)}
+            >
+              <Picker.Item label="On Progress" value="onprogress"/>
+              <Picker.Item label="Done" value="done" />
+              <Picker.Item label="Idle" value="idle" />
+              <Picker.Item label="Drop" value="drop" />
+            </Picker>
 
-      
-      <Text style={styles.label}>Aktifitas Perbaikan</Text>
-        <TextInput
-          multiline={true}
-          numberOfLines={4}
-          style={styles.inputTextArea}
-          onChangeText={setRepairActivity}
-          value={repairActivity}
-          placeholder='Tuliskan aktifitas perbaikan'
-        />
+        
+        <Text style={styles.label}>Aktifitas Progress Perbaikan</Text>
+          <TextInput
+            multiline={true}
+            numberOfLines={4}
+            style={styles.inputTextArea}
+            onChangeText={setRepairActivity}
+            value={repairActivity}
+            placeholder='Tuliskan aktifitas perbaikan'
+          />
 
-      <Text style={styles.label}>Nama PIC yang Menemukan</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setPICDealer}
-          value={PICDealer}
-          placeholder='Tuliskan lokasi temuan'
-        />
+        <Text style={styles.label}>PIC yang Mengecek Perbaikan</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setPICDealer}
+            value={PICDealer}
+            placeholder='Tuliskan lokasi temuan'
+          />
 
-      <Text style={styles.label}>Dokumentasi Temuan</Text>
-      <ImageUpload uploadedImage={uploadedImage} setUploadedImage={setUploadedImage} />
-      
+        <Text style={styles.label}>Dokumentasi Progress</Text>
+        <ImageUpload uploadedImage={uploadedImage} setUploadedImage={setUploadedImage} />
+        
 
-      <Text style={styles.labelDate}>Tanggal Temuan</Text>
-      <DatePicker selectedDate={findingDate} setSelectedDate={setFindingDate} />
+        <Text style={styles.labelDate}>Tanggal Progress Perbaikan</Text>
+        <DatePicker selectedDate={findingDate} setSelectedDate={setFindingDate} />
 
-      <Text style={styles.labelDate}>Tanggal Temuan</Text>
-      <DatePicker selectedDate={dueDate} setSelectedDate={setDueDate} />
+        </SafeAreaView>
+      </ScrollView>
 
       <SafeAreaView  style={styles.addButtonView}>
-        <Button
-          onPress={handleEditButtonClicked}
-          title="Perbarui Tugas"
-          accessibilityLabel="Add this new task"
-        />
-      </SafeAreaView>
-
-
-      </SafeAreaView>
-    </ScrollView>
+          <Button
+            onPress={handleEditButtonClicked}
+            title="Perbarui Progress Tugas"
+            accessibilityLabel="Add this new task"
+          />
+        </SafeAreaView>
+    </>
   );
 };
 
