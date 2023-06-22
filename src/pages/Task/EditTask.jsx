@@ -242,7 +242,7 @@ const AddTask = ({route, navigation}) => {
       <Text style={styles.labelDate}>Tanggal Temuan</Text>
       <DatePicker selectedDate={findingDate} setSelectedDate={setFindingDate} />
 
-      <Text style={styles.labelDate}>Tanggal Temuan</Text>
+      <Text style={styles.labelDate}>Tanggal Tenggat</Text>
       <DatePicker selectedDate={dueDate} setSelectedDate={setDueDate} />
 
       <SafeAreaView  style={styles.addButtonView}>
