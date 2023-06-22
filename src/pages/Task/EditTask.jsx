@@ -4,7 +4,7 @@ import {Picker} from '@react-native-picker/picker';
 import DatePicker from '../../components/DatePicker';
 
 import { getDatabase, ref, push, child, set, get, update} from "firebase/database";
-import {  getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {  getStorage, ref as refStorage, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import FIREBASE from '../../config/firebase';
 
 
@@ -50,7 +50,7 @@ const AddTask = ({route, navigation}) => {
         
         const storage = getStorage(FIREBASE);
         const fileName = image_id.uri.substring(image_id.uri.lastIndexOf('/') + 1);
-        const reference = storageRef(storage, `images/${fileName}`);
+        const reference = refStorage(storage, `images/${fileName}`);
         getDownloadURL(reference).then(url => setUrl(url));
 
         setUploadedImage({uri: url});
@@ -65,13 +65,12 @@ const AddTask = ({route, navigation}) => {
   }
 
   const handleEditButtonClicked = () => {
-    if(taskTitle) {
-      // && status && repairActivity && uploadedImage != null && PICDealer && findingDate != {} && dueDate != {}
+    if(data.taskTitle) {
         const database = getDatabase(FIREBASE);
 
 
         const tasks = {
-          taskTitle,
+          taskTitle: data.taskTitle,
           status: selectedStatus,
           repairActivity,
           PICDealer,
@@ -87,7 +86,7 @@ const AddTask = ({route, navigation}) => {
             
             uploadImage();
 
-            navigation.goBack();
+            navigation.navigate('DetailTask', {dealer_id: dealer_id, task_id: task_id, image_id: uploadedImage});
           })
           .catch(err => console.log(err))
 
@@ -99,10 +98,11 @@ const AddTask = ({route, navigation}) => {
   
 
   const uploadImage = async () => {
+    console.log("SEMPAT MAU UPLOAD");
     try {
       const storage = getStorage(FIREBASE);
       const fileName = uploadedImage.uri.substring(uploadedImage.uri.lastIndexOf('/') + 1);
-      const storageRef = storageRef(storage, 'images/' + fileName);
+      const storageRef = refStorage(storage, 'images/' + fileName);
 
       //convert image to array of bytes
       const img = await fetch(uploadedImage.uri);
@@ -136,6 +136,7 @@ const AddTask = ({route, navigation}) => {
     } catch(e) {
       console.error(e);
     }
+
   }
 
   const styles = StyleSheet.create({
@@ -198,7 +199,7 @@ const AddTask = ({route, navigation}) => {
         <TextInput
           style={styles.input}
           onChangeText={setTaskTitle}
-          value={taskTitle}
+          value={data.taskTitle}
           placeholder='Tuliskan nama tugas'
         />
 
