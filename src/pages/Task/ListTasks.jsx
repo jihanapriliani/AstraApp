@@ -138,7 +138,7 @@ const ListTasks = ({route, navigation}) => {
   return (
   <>
     <ScrollView>
-      <View style={{ display: 'flex', justifyContent: 'center', }}>
+      <View style={{ display: 'flex', justifyContent: 'center', paddingBottom: 100, }}>
             <Text style={{  color: isDarkMode ? 'black' : 'black', marginLeft: 20, marginVertical: 20, fontSize: 24, width: '85%', fontWeight: '600' }}>{dealer}</Text>
             
             <View style={{ width: '85%', height: 5, marginHorizontal: 20, display: 'flex', 'flexDirection': 'row' }}>

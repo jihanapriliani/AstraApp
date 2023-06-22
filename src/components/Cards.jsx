@@ -108,8 +108,8 @@ const Cards = props => {
                                 </Text>
                             </View>
                 
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={{ marginLeft: 5, marginTop: 10 }}>Nama Ketua Dealer {index + 1}</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                              
 
                                 <View style={styles.dotContainer}>
                                   <Text style={styles.dot}>

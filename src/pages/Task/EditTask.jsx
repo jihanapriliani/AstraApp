@@ -209,6 +209,7 @@ const AddTask = ({route, navigation}) => {
               style={{ height: 50, width: 250, marginLeft: 10, color: isDarkMode ? 'gray' : 'gray', backgroundColor: isDarkMode ? 'lightgray' : 'lightgray', marginTop: 20, marginLeft: 20, borderRadius: 20 }}
               onValueChange={(itemValue, itemIndex) => setSelectedStatus(itemValue)}
           >
+            <Picker.Item label="Pilih Status" />
             <Picker.Item label="On Progress" value="onprogress"/>
             <Picker.Item label="Done" value="done" />
             <Picker.Item label="Idle" value="idle" />

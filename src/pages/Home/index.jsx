@@ -48,6 +48,7 @@ const Home = (props) => {
 const styles = StyleSheet.create({
   home: {
     position: 'relative',
+    paddingBottom: 100,
   },
 
   cityButton : {

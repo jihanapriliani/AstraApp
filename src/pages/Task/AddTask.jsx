@@ -45,7 +45,7 @@ const AddTask = ({route, navigation}) => {
 
         const tasks = {
           taskTitle,
-          status: selectedStatus,
+          status: "idle",
           repairActivity,
           PICDealer,
           uploadedImage,
@@ -177,7 +177,7 @@ const AddTask = ({route, navigation}) => {
           placeholder='Tuliskan nama tugas'
         />
 
-      <Text style={styles.label}>Status</Text>
+      {/* <Text style={styles.label}>Status</Text>
           <Picker
               selectedValue={selectedStatus}
               style={{ height: 50, width: 250, marginLeft: 10, color: isDarkMode ? 'gray' : 'gray', backgroundColor: isDarkMode ? 'lightgray' : 'lightgray', marginTop: 20, marginLeft: 20, borderRadius: 20,  }}
@@ -187,7 +187,7 @@ const AddTask = ({route, navigation}) => {
             <Picker.Item label="Done" value="done" />
             <Picker.Item label="Idle" value="idle" />
             <Picker.Item label="Drop" value="drop" />
-          </Picker>
+          </Picker> */}
 
       
       <Text style={styles.label}>Aktifitas Perbaikan</Text>
