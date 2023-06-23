@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, PermissionsAndroid, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, PermissionsAndroid, Alert, Platform } from 'react-native';
 import React, { useState, useEffect } from 'react';
 
 import { getDatabase, ref, get, child, remove } from "firebase/database";
@@ -91,42 +91,45 @@ const ExportButtonTask = (props) => {
 
   }
   const handleClick = async () => {
-
-    try{
-      // Check for Permission (check if permission is already given or not)
-      let isPermitedExternalStorage = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-
-      if(!isPermitedExternalStorage){
-
-        // Ask for permission
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          {
-            title: "Storage permission needed",
-            buttonNeutral: "Ask Me Later",
-            buttonNegative: "Cancel",
-            buttonPositive: "OK"
+    if(Platform.OS === "android" && Platform.constants['Release'] >= 13) {
+      exportDataToExcel();
+    } else {
+      try{
+        // Check for Permission (check if permission is already given or not)
+        let isPermitedExternalStorage = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+  
+        if(!isPermitedExternalStorage){
+  
+          // Ask for permission
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+              title: "Storage permission needed",
+              buttonNeutral: "Ask Me Later",
+              buttonNegative: "Cancel",
+              buttonPositive: "OK"
+            }
+          );
+  
+          
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            // Permission Granted (calling our exportDataToExcel function)
+            await exportDataToExcel();
+            console.log("Permission granted");
+          } else {
+            // Permission denied
+            console.log("Permission denied");
           }
-        );
-
-        
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          // Permission Granted (calling our exportDataToExcel function)
-          await exportDataToExcel();
-          console.log("Permission granted");
-        } else {
-          // Permission denied
-          console.log("Permission denied");
+        }else{
+           // Already have Permission (calling our exportDataToExcel function)
+           console.log("Harusnya nge expot");
+           await exportDataToExcel();
         }
-      }else{
-         // Already have Permission (calling our exportDataToExcel function)
-         console.log("Harusnya nge expot");
-         await exportDataToExcel();
+      }catch(e){
+        console.log('Error while checking permission');
+        console.log(e);
+        return
       }
-    }catch(e){
-      console.log('Error while checking permission');
-      console.log(e);
-      return
     }
     
   };
