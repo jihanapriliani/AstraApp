@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 
 import {getDatabase, ref, get, child} from 'firebase/database';
 import FIREBASE from '../config/firebase';
+import ExportButtonDealer from './ExportButtonDealer';
 
 const Cards = props => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -110,13 +111,8 @@ const Cards = props => {
                 
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
                               
-
-                                <View style={styles.dotContainer}>
-                                  <Text style={styles.dot}>
-                                    ...
-                                  </Text>
-
-                                </View>
+                              <ExportButtonDealer dealer={key} />
+                               
                             </View>
                         </View>
                     </TouchableHighlight>

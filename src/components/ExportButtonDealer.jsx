@@ -1,13 +1,51 @@
 import { View, Text, TouchableOpacity, PermissionsAndroid, Alert } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { getDatabase, ref, get, child, remove } from "firebase/database";
+import FIREBASE from '../config/firebase';
 
 // var RNFS = require('react-native-fs');
 import XLSX from 'xlsx';
 import RNFS from 'react-native-fs';
 
-const ExportButton = (props) => {
+const ExportButtonDealer = (props) => {
 
-  const {exportType} = props;
+  const {dealer} = props;
+  const [data, setData] = useState({});
+
+  useEffect(() => {
+    const database = ref(getDatabase(FIREBASE));
+    console.log("dealer", dealer);
+    get(child(database, `HistoryTasks/${dealer}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        setData(snapshot.val());
+      } else {
+        console.log("No data available");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+}, [])
+
+
+ const convertToDataArray = () => {
+    const dataArray = [];
+
+    for (const taskId in data) {
+        for (const subTaskId in data[taskId]) {
+            const task = {
+            idTask: taskId,
+            subTaskId: subTaskId,
+            ...data[taskId][subTaskId]
+            };
+            dataArray.push(task);
+        }
+    }
+
+    return(dataArray)
+
+ }
+
 
   const getCurrentDateTime = () => {
     const currentDate = new Date();
@@ -30,9 +68,10 @@ const ExportButton = (props) => {
 
     // Created Sample data
     let sample_data_to_export = [{id: '1', name: 'First User'},{ id: '2', name: 'Second User'}];
+    console.log("data dealer  " + data);
 
     let wb = XLSX.utils.book_new();
-    let ws = XLSX.utils.json_to_sheet(sample_data_to_export)    
+    let ws = XLSX.utils.json_to_sheet(convertToDataArray(data))    
     XLSX.utils.book_append_sheet(wb,ws,"Users")
     const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
 
@@ -102,29 +141,38 @@ const ExportButton = (props) => {
     
   };
 
-  return (
-    <View
-      style={{
+  const styles = {
+    dotContainer: {
+        height: 20,
+        width: 30,
+        backgroundColor: 'white',
+        marginRight: 5,
+        marginTop: 10,
+        fontSize: 20,
         display: 'flex',
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        flex: 1,
-      }}>
-      <TouchableOpacity
-        onPress={() => handleClick()}
-        style={{
-          width: '50%',
-          paddingVertical: 10,
-          paddingHorizontal: 15,
-          backgroundColor: 'blue',
-          marginVertical: 20,
-        }}>
-        <Text style={{textAlign: 'center', color: 'white'}}>
-          Export to Excel
-        </Text>
-      </TouchableOpacity>
-    </View>
+        borderRadius: 10,
+      },
+  
+      dot : {
+        fontSize: 20,
+        lineHeight: 15,
+        color: '#417CC2',
+        fontWeight: 'bold',
+      }
+  };
+
+  return (
+   <>
+        <TouchableOpacity style={styles.dotContainer} onPress={() => handleClick()}>
+            <Text style={styles.dot}>
+                ...
+            </Text>
+        </TouchableOpacity>
+    </>
   );
 }
 
-export default ExportButton
+export default ExportButtonDealer
