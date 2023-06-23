@@ -7,6 +7,7 @@ import Cards from '../../components/Cards';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 import { faBoxArchive } from '@fortawesome/free-solid-svg-icons/faBoxArchive'
+import ExportButton from '../../components/ExportButton';
 
 
 const Home = (props) => {
@@ -20,10 +21,10 @@ const Home = (props) => {
     <>
     <ScrollView>
       <View style={styles.home}>
+          <ExportButton />
           <ButtonGroup selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
-
           
-            <Cards navigation={navigation} selectedCity={selectedCity} />
+          <Cards navigation={navigation} selectedCity={selectedCity} />
 
       </View>
     </ScrollView>
