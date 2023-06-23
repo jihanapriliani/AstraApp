@@ -129,14 +129,14 @@ const DetailTask = ({route, navigation}) => {
           editable={false}
         />
 
-      <Text style={styles.label}>Status</Text>
+      <Text style={styles.label}>Status Progress</Text>
         <TextInput
           style={styles.input}
           value={data.status}
           editable={false}
       />
 
-      <Text style={styles.label}>Aktifitas Perbaikan</Text>
+      <Text style={styles.label}>Aktifitas Progress Perbaikan</Text>
         <TextInput
            multiline={true}
            numberOfLines={4}
@@ -145,30 +145,30 @@ const DetailTask = ({route, navigation}) => {
           editable={false}
         />
 
-      <Text style={styles.label}>Nama PIC yang Melakukan Temuan</Text>
+      <Text style={styles.label}>Nama PIC yang Melakukan Progress</Text>
         <TextInput
           style={styles.input}
           value={data.PICDealer}
           editable={false}
         />
 
-      <Text style={styles.label}>Dokumentasi</Text>
+      <Text style={styles.label}>Dokumentasi Progress</Text>
       <Image source={{ uri: url }} style={styles.imageBox} />
         
 
-      <Text style={styles.label}>Tanggal Penemuan</Text>
+      <Text style={styles.label}>Tanggal Pelaksanaan Progress</Text>
         <TextInput
           style={styles.input}
           value={data.findingDate}
           editable={false}
         />
 
-      <Text style={styles.label}>Tanggal Tenggat Perbaikan</Text>
+      {/* <Text style={styles.label}>Tanggal Tenggat Perbaikan</Text>
             <TextInput
               style={styles.input}
               value={data.dueDate}
               editable={false}
-            />
+            /> */}
       
       <SafeAreaView  style={styles.editButtonView}>
         <Button
@@ -181,7 +181,7 @@ const DetailTask = ({route, navigation}) => {
       <SafeAreaView  style={styles.delButtonView}>
         <Button
           onPress={handleEditButtonClicked}
-          title="Edit Task"
+          title="Edit Task Progress"
           accessibilityLabel="Add this new task"
         />
       </SafeAreaView>

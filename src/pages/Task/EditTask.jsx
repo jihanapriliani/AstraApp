@@ -23,7 +23,7 @@ const AddTask = ({route, navigation}) => {
   const [dueDate, setDueDate] = useState(new Date());
 
   const [selectedStatus, setSelectedStatus] = useState();
-  const [uploadedImage, setUploadedImage] = useState(null);
+  const [uploadedImageProgress, setUploadedImageProgress] = useState(null);
 
   const [ data, setData ] = useState({});
   const [ url, setUrl ] = useState("")
@@ -53,7 +53,7 @@ const AddTask = ({route, navigation}) => {
         const reference = refStorage(storage, `images/${fileName}`);
         getDownloadURL(reference).then(url => setUrl(url));
 
-        setUploadedImage({uri: url});
+        setUploadedImageProgress({uri: url});
     }, [])
 
 
@@ -74,19 +74,38 @@ const AddTask = ({route, navigation}) => {
           status: selectedStatus,
           repairActivity,
           PICDealer,
-          uploadedImage,
+          uploadedImage: uploadedImageProgress,
           findingDate: formatDate(findingDate),
-          dueDate: formatDate(dueDate),
+          dueDate: data.dueDate,
           httpUrlImage: findingImage
         };
 
+        const historyTask = {
+          taskTitle: data.taskTitle,
+          status: selectedStatus,
+          repairActivity: data.repairActivity,
+          PICDealer: data.PICDealer,
+          uploadedImage: data.uploadedImage,
+          findingDate: data.findingDate,
+          dueDate: data.dueDate,
+          httpUrlImage: findingImage,
+          activityProgess: repairActivity,
+          progressDate: formatDate(findingDate),
+          progressImage: uploadedImageProgress,
+          progressPIC: PICDealer,
+        }
+
         update(ref(database, `Tasks/${dealer_id}/${task_id}`), tasks)
           .then(data => {
-            Alert.alert('Success', 'Data Tugas Berhasil Diubah!');
             
             uploadImage();
-
-            navigation.navigate('DetailTask', {dealer_id: dealer_id, task_id: task_id, image_id: uploadedImage});
+ 
+            push(ref(database, `HistoryTasks/${dealer_id}/${task_id}`), historyTask)
+            .then((data) => {
+              Alert.alert('Success', 'Data Tugas Berhasil Diubah!');
+            }).catch(err => console.log(err))
+            
+            navigation.navigate('DetailTask', {dealer_id: dealer_id, task_id: task_id, image_id: uploadedImageProgress});
           })
           .catch(err => console.log(err))
 
@@ -98,14 +117,13 @@ const AddTask = ({route, navigation}) => {
   
 
   const uploadImage = async () => {
-    console.log("SEMPAT MAU UPLOAD");
     try {
       const storage = getStorage(FIREBASE);
-      const fileName = uploadedImage.uri.substring(uploadedImage.uri.lastIndexOf('/') + 1);
+      const fileName = uploadedImageProgress.uri.substring(uploadedImageProgress.uri.lastIndexOf('/') + 1);
       const storageRef = refStorage(storage, 'images/' + fileName);
 
       //convert image to array of bytes
-      const img = await fetch(uploadedImage.uri);
+      const img = await fetch(uploadedImageProgress.uri);
       const bytes = await img.blob(); 
       
       const uploadTask = uploadBytesResumable(storageRef, bytes);
@@ -236,7 +254,7 @@ const AddTask = ({route, navigation}) => {
         />
 
       <Text style={styles.label}>Dokumentasi Temuan</Text>
-      <ImageUpload uploadedImage={uploadedImage} setUploadedImage={setUploadedImage} />
+      <ImageUpload uploadedImage={uploadedImageProgress} setUploadedImage={setUploadedImageProgress} />
       
 
       <Text style={styles.labelDate}>Tanggal Temuan</Text>

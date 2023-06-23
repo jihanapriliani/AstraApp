@@ -3,7 +3,7 @@ import {SafeAreaView, StyleSheet, TextInput, Text, Button, Alert, View, ScrollVi
 import {Picker} from '@react-native-picker/picker';
 import DatePicker from '../../components/DatePicker';
 
-import { getDatabase, ref, push, child, updater } from "firebase/database";
+import { getDatabase, ref, push, child, update } from "firebase/database";
 import {  getStorage, ref as refStorage, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import FIREBASE from '../../config/firebase';
 
@@ -62,6 +62,7 @@ const AddTask = ({route, navigation}) => {
           uploadedImage,
           findingDate: formatDate(findingDate),
           dueDate: formatDate(dueDate),
+          progressDate: "",
           httpUrlImage: findingImage,
           activityProgess: "",
           progressDate: "",
@@ -199,19 +200,6 @@ const AddTask = ({route, navigation}) => {
           value={taskTitle}
           placeholder='Tuliskan nama tugas'
         />
-
-      {/* <Text style={styles.label}>Status</Text>
-          <Picker
-              selectedValue={selectedStatus}
-              style={{ height: 50, width: 250, marginLeft: 10, color: isDarkMode ? 'gray' : 'gray', backgroundColor: isDarkMode ? 'lightgray' : 'lightgray', marginTop: 20, marginLeft: 20, borderRadius: 20,  }}
-              onValueChange={(itemValue, itemIndex) => setSelectedStatus(itemValue)}
-          >
-            <Picker.Item label="On Progress" value="onprogress"/>
-            <Picker.Item label="Done" value="done" />
-            <Picker.Item label="Idle" value="idle" />
-            <Picker.Item label="Drop" value="drop" />
-          </Picker> */}
-
       
       <Text style={styles.label}>Aktifitas Perbaikan</Text>
         <TextInput
@@ -238,7 +226,7 @@ const AddTask = ({route, navigation}) => {
       <Text style={styles.labelDate}>Tanggal Temuan</Text>
       <DatePicker selectedDate={findingDate} setSelectedDate={setFindingDate} />
 
-      <Text style={styles.labelDate}>Tanggal Temuan</Text>
+      <Text style={styles.labelDate}>Tanggal Tenggat</Text>
       <DatePicker selectedDate={dueDate} setSelectedDate={setDueDate} />
 
       <SafeAreaView  style={styles.addButtonView}>
