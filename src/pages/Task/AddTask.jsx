@@ -3,7 +3,7 @@ import {SafeAreaView, StyleSheet, TextInput, Text, Button, Alert, View, ScrollVi
 import {Picker} from '@react-native-picker/picker';
 import DatePicker from '../../components/DatePicker';
 
-import { getDatabase, ref, push, child } from "firebase/database";
+import { getDatabase, ref, push, child, updater } from "firebase/database";
 import {  getStorage, ref as refStorage, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import FIREBASE from '../../config/firebase';
 
@@ -54,23 +54,46 @@ const AddTask = ({route, navigation}) => {
           httpUrlImage: findingImage
         };
 
+        const historyTask = {
+          taskTitle,
+          status: "idle",
+          repairActivity,
+          PICDealer,
+          uploadedImage,
+          findingDate: formatDate(findingDate),
+          dueDate: formatDate(dueDate),
+          httpUrlImage: findingImage,
+          activityProgess: "",
+          progressDate: "",
+          progressImage: "",
+          progressPIC: "",
+        }
 
-        push(ref(database, `Tasks/${dealer_id}`), tasks)
+
+        const newTaskKey =  push(ref(database, `Tasks/${dealer_id}`)).key;
+        
+        update(ref(database, `Tasks/${dealer_id}/${newTaskKey}`), tasks)
           .then(data => {
-            Alert.alert('Success', 'Data Tugas Berhasil Ditambahkan!');
+            // Alert.alert('Success', 'Data Tugas Berhasil Ditambahkan!');
             
             uploadImage();
 
+            push(ref(database, `HistoryTasks/${dealer_id}/${newTaskKey}`), historyTask)
+            .then((data) => {
+               Alert.alert('Success', 'Data Tugas Berhasil Ditambahkan!');
+              }).catch(err => console.log(err))
+              
             navigation.replace('ListTasks', { key: dealer_id, dealer: dealer});
           })
           .catch(err => console.log(err))
+
+
+      
 
     } else {
       Alert.alert('Error', 'Tolong Pastikan Semua Data Terisi!');
     }
   }
-
-  console.log(findingImage);
 
   const uploadImage = async () => {
     try {
