@@ -10,6 +10,7 @@ import FIREBASE from '../../config/firebase';
 import { getDatabase, get, ref, child } from 'firebase/database'
 import { getAuth, signOut } from 'firebase/auth';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Profile = ({navigation, route}) => {
@@ -18,7 +19,8 @@ const Profile = ({navigation, route}) => {
   const auth = getAuth(FIREBASE);
 
   const [data, setData] = useState({});
-  const { uid } = route.params;
+  let { uid } = route.params;
+
 
   useEffect(() => {
     const database = ref(getDatabase(FIREBASE));
@@ -51,6 +53,7 @@ const Profile = ({navigation, route}) => {
 
             <TouchableHighlight underlayColor={'white'} style={styles.actionButton} onPress={() => {
               signOut(auth)
+              AsyncStorage.setItem("@user", {});
               navigation.navigate('Login')
             }}>
                 <>

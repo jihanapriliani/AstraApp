@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, useColorScheme, Pressable } from 'react-native';
 import FIREBASE from '../config/firebase';
 import { getAuth, connectAuthEmulator, signInWithEmailAndPassword } from 'firebase/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation }) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -10,6 +11,28 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const auth = getAuth(FIREBASE);
+
+  const [userInfo, setUserInfo] = useState();
+
+  useEffect(() => {
+    checkLocalUser();
+
+    if(userInfo) {
+      navigation.navigate('Dealer');
+    }
+
+
+  }, [])
+
+  const checkLocalUser = async () => {
+    try {
+      const userJSON = await AsyncStorage.getItem("@user");
+      const userData = userJSON ? JSON.parse(userJSON) : null;
+      setUserInfo(userData);
+    } catch(e) {
+      console.log(e);
+    }
+  }
 
   const userLogin = async () => {
     if (email === '' && password === '') {
@@ -24,6 +47,9 @@ const Login = ({ navigation }) => {
               setEmail('');
               setPassword('');
               setIsLoading(false);
+
+              AsyncStorage.setItem("@user", JSON.stringify(userCredential.user));
+
               navigation.navigate('Dealer');
             })
             .catch(err => {

@@ -19,7 +19,8 @@ const Home = (props) => {
   const [active, setActive] = useState("dealer");
 
   const { user } = useAuth(); 
-  
+
+
   return (
     <>
     <ScrollView>
