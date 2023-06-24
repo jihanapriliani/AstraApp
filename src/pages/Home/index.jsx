@@ -8,12 +8,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 import { faBoxArchive } from '@fortawesome/free-solid-svg-icons/faBoxArchive'
 
+import {useAuth} from '../../hooks/useAuth';
+
+
 const Home = (props) => {
   const isDarkMode = useColorScheme() === 'dark';
   const {navigation} = props;
   const [selectedCity, setSelectedCity] = useState("C03");
 
   const [active, setActive] = useState("dealer");
+
+  const { user } = useAuth(); 
   
   return (
     <>
@@ -27,13 +32,13 @@ const Home = (props) => {
     </ScrollView>
 
       <View style={styles.navGroup}>
-          <TouchableHighlight style={styles.dealerButton}>
+          <TouchableHighlight style={styles.dealerButton} onPress={() => navigation.navigate('Dealer')}>
             <Text style={{ color: active === "dealer" ? 'white' : 'black', backgroundColor: active === "dealer" ? '#1455A3' : 'white',}}>
               Dealer
             </Text>
           </TouchableHighlight>
 
-          <TouchableHighlight style={styles.profileButton}>
+          <TouchableHighlight style={styles.profileButton} onPress={() => navigation.navigate('Profile', {'uid': user.uid})}>
             <Text style={{ color: isDarkMode ? 'black' : 'black', }}>
               <FontAwesomeIcon icon={faUser} color='#1455A3' />
             </Text>
