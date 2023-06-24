@@ -42,7 +42,7 @@ const Profile = ({navigation, route}) => {
         </View>
 
         <View>
-            <TouchableHighlight underlayColor={'white'} style={styles.actionButton} >
+            <TouchableHighlight underlayColor={'white'} style={styles.actionButton} onPress={() => navigation.navigate('ChangePassword')}>
                 <>
                     <FontAwesomeIcon icon={faKey} color='black' style={{ marginRight: 5 }} />
                     <Text style={{ color: isDarkMode ? 'black' : 'black'}}>Ganti Kata Kunci</Text>

@@ -12,6 +12,7 @@ import DetailTask from '../pages/Task/DetailTask';
 import EditTask from '../pages/Task/EditTask';
 import Login from '../pages/Login';
 import Profile from '../pages/Home/Profile';
+import ChangePassword from '../pages/ChangePassword';
 
 const Router = () => {
   return (
@@ -31,6 +32,11 @@ const Router = () => {
           <Stack.Screen
               name="Profile"
               component={Profile}
+              options={{headerShown: true}}
+          />
+          <Stack.Screen
+              name="ChangePassword"
+              component={ChangePassword}
               options={{headerShown: true}}
           />
            <Stack.Screen 

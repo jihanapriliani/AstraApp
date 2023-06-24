@@ -1,35 +1,40 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, useColorScheme, Pressable } from 'react-native';
 import FIREBASE from '../config/firebase';
-import { getAuth, connectAuthEmulator, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, updatePassword } from 'firebase/auth'
 
-const Login = ({ navigation }) => {
+const ChangePassword = ({ navigation }) => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [currentPassword, setcurrentPassword] = useState('');
+  const [newPassword, setnewPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
   const auth = getAuth(FIREBASE);
+  const user = auth.currentUser;
 
-  const userLogin = async () => {
-    if (email === '' && password === '') {
-      Alert.alert('Tolong Isi Email dan Password!')
+  const changePass = async () => {
+    if (currentPassword === '' && newPassword === '') {
+      Alert.alert('Tolong Isi Password Lama dan Baru Anda!')
     } else {
       setIsLoading(true);
       
       try {
-          await signInWithEmailAndPassword(auth, email, password)
+          await updatePassword(user, newPassword)
             .then((userCredential) => {
-              console.log("BERHASIL LOGIN");
-              setEmail('');
-              setPassword('');
+              setnewPassword('');
+              setcurrentPassword('');
               setIsLoading(false);
+
+              Alert.alert('Berhasil', 'Password Berhasil Diperbarui!');
               navigation.navigate('Dealer');
             })
             .catch(err => {
               setIsLoading(false);
               Alert.alert(err.message);
             });
+
+        console.log(user);
       } catch(e) {
         console.log(e);
       }
@@ -48,26 +53,27 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={{ color: isDarkMode ? 'black' : 'black'}}>Email</Text>
+      <Text style={{ color: isDarkMode ? 'black' : 'black'}}>Password Saat ini</Text>
       <TextInput
         style={{ ...styles.inputStyle, color: isDarkMode ? 'black' : 'black' }}
-        placeholder="Email"
-        value={email}
-        onChangeText={(val) => setEmail(val)}
-      />
-      
-      <Text style={{ color: isDarkMode ? 'black' : 'black'}}>Password</Text>
-      <TextInput
-        style={styles.inputStyle}
         placeholder="Password"
-        value={password}
-        onChangeText={(val) => setPassword(val)}
+        value={currentPassword}
+        onChangeText={(val) => setcurrentPassword(val)}
+       
+      />
+
+      <Text style={{ color: isDarkMode ? 'black' : 'black'}}>Password Baru</Text>
+      <TextInput
+        style={{ ...styles.inputStyle, color: isDarkMode ? 'black' : 'black' }}
+        placeholder="Password"
+        value={newPassword}
+        onChangeText={(val) => setnewPassword(val)}
         maxLength={15}
-        secureTextEntry={true}
+        // secureTextEntry={true}
       />
       <Pressable style={styles.loginButton}>
-        <Text style={{ color: 'white', textAlign: 'center' }} onPress={userLogin}>
-            Login
+        <Text style={{ color: 'white', textAlign: 'center' }} onPress={changePass}>
+            Ubah Password
         </Text>
       </Pressable>
     
@@ -115,4 +121,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Login;
+export default ChangePassword;

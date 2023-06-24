@@ -38,7 +38,7 @@ const Home = (props) => {
             </Text>
           </TouchableHighlight>
 
-          <TouchableHighlight style={styles.profileButton} onPress={() => navigation.navigate('Profile', {'uid': user.uid})}>
+          <TouchableHighlight style={styles.profileButton} underlayColor={'#1455A3'} onPress={() => navigation.navigate('Profile', {'uid': user.uid})}>
             <Text style={{ color: isDarkMode ? 'black' : 'black', }}>
               <FontAwesomeIcon icon={faUser} color='#1455A3' />
             </Text>
@@ -99,9 +99,14 @@ const styles = StyleSheet.create({
 
   profileButton: {
     flex: 1,
+    backgroundColor: 'white',
+    height: '80%',
+    borderRadius: 20,
+    marginHorizontal: 10,
+    marginVertical: 20,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   }
 
 })
