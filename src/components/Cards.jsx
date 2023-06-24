@@ -100,7 +100,7 @@ const Cards = props => {
                 
                 Object.keys(dealers).map((key, index) =>   (
                     <TouchableHighlight  activeOpacity={0.8}
-                    underlayColor="#417CC2" key={key} style={styles.cardWrapper} onPress={() => navigation.navigate('ListTasks', { key: key, dealer: dealers[key] })}>
+                    underlayColor="#417CC2" key={key} style={styles.cardWrapper} onPress={() => navigation.navigate('ListTasks', { key: key, dealer: dealers[key], dealer_id: key })}>
                         <View>
                             <View style={styles.cardContent}>
                               <View style={styles.cirle}></View>

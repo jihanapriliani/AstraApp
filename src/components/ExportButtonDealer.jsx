@@ -41,9 +41,7 @@ const ExportButtonDealer = (props) => {
             dataArray.push(task);
         }
     }
-
     return(dataArray)
-
  }
 
 

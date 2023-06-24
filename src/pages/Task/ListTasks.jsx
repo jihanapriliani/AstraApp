@@ -8,7 +8,8 @@ import FIREBASE from '../../config/firebase';
 const ListTasks = ({route, navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const { key , dealer } = route.params;
+  const { key , dealer, dealer_id } = route.params;
+
 
   const [tasks, setTasks] = useState({});
 
@@ -137,6 +138,7 @@ const ListTasks = ({route, navigation}) => {
   return (
   <>
     <ScrollView>
+
       <View style={{ display: 'flex', justifyContent: 'center', paddingBottom: 100, }}>
             <Text style={{  color: isDarkMode ? 'black' : 'black', marginLeft: 20, marginVertical: 20, fontSize: 24, width: '85%', fontWeight: '600' }}>{dealer}</Text>
             
@@ -146,6 +148,12 @@ const ListTasks = ({route, navigation}) => {
                 <View style={{ flex: 1, backgroundColor: "#FDCA40" }}></View>
                 <View style={{ flex: 1, backgroundColor: "#DD2C32" }}></View>
             </View>
+
+            <TouchableHighlight onPress={() => navigation.navigate('DownloadHistory', {dealer_id: dealer_id})}>
+              <Text  style={{  color: isDarkMode ? 'gray' : 'gray', marginVertical: 30, marginHorizontal: 50}}>
+                Download Data
+              </Text>
+            </TouchableHighlight>
 
             {
               Object.keys(tasks).length === 1 ? (

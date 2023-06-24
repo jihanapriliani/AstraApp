@@ -13,6 +13,7 @@ import EditTask from '../pages/Task/EditTask';
 import Login from '../pages/Login';
 import Profile from '../pages/Home/Profile';
 import ChangePassword from '../pages/ChangePassword';
+import ExportDealerHistory from '../pages/Dealer/ExportDealerHistory';
 
 const Router = () => {
   return (
@@ -61,6 +62,12 @@ const Router = () => {
             name='EditTask'
             component={EditTask}
             options={{headerShown: true}}
+          />
+
+          <Stack.Screen 
+            name='DownloadHistory'
+            component={ExportDealerHistory}
+            options={{headerShown: true, title: 'Unduh History'}}
           />
 
     </Stack.Navigator>

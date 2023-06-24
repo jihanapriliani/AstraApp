@@ -1,12 +1,239 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text, useColorScheme, StyleSheet, TouchableHighlight, Platform, PermissionsAndroid, Alert } from 'react-native'
+import React, {useState, useEffect} from 'react';
 
-const ExportDealerHistory = () => {
+import DatePicker from 'react-native-date-picker';
+
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
+
+import { getDatabase, ref, get, child, remove } from "firebase/database";
+import FIREBASE from '../../config/firebase';
+
+// var RNFS = require('react-native-fs');
+import XLSX from 'xlsx';
+import RNFS from 'react-native-fs';
+
+
+
+const ExportDealerHistory = ({route}) => {
+  const isDarkMode = useColorScheme() === 'dark';
+
+  const [fDate, setfDate] = useState(new Date());
+  const [lDate, setLDate] = useState(new Date());
+
+  const {dealer_id} = route.params;
+  const [data, setData] = useState({});
+
+  useEffect(() => {
+    const database = ref(getDatabase(FIREBASE));
+    get(child(database, `HistoryTasks/${dealer_id}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        setData(snapshot.val());
+      } else {
+        console.log("No data available");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+
+    // getSpesificData()
+}, [])
+
+
+
+const getSpesificData = (data) => {
+  const startDate = fDate;
+  const endDate = lDate;
+  
+  const tasksInRange = data.filter(task => {
+    const dateParts = task.dueDate.split("-");
+    const dueDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+    return dueDate >= startDate && dueDate <= endDate;
+  });
+  
+  return tasksInRange;
+}
+
+
+
+const getCurrentDateTime = () => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(currentDate.getDate()).padStart(2, '0');
+  const hours = String(currentDate.getHours()).padStart(2, '0');
+  const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+  const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+  const currentDateTime = `${year}-${month}-${day}--${hours}-${minutes}-${seconds}`;
+
+  return currentDateTime;
+};
+
+
+ const convertToDataArray = () => {
+    const dataArray = [];
+
+    for (const taskId in data) {
+        for (const subTaskId in data[taskId]) {
+            const task = {
+            idTask: taskId,
+            subTaskId: subTaskId,
+            ...data[taskId][subTaskId]
+            };
+            dataArray.push(task);
+        }
+    }
+    return(dataArray)
+ }
+
+
+const exportDataToExcel = () => {
+    const dateTime = getCurrentDateTime();
+    let wb = XLSX.utils.book_new();
+    let ws = XLSX.utils.json_to_sheet(convertToDataArray(data))    
+    XLSX.utils.book_append_sheet(wb,ws,"Users")
+    const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
+
+    RNFS.mkdir(RNFS.ExternalDirectoryPath).then((r) => {
+        
+        const sourceFilePath = RNFS.ExternalDirectoryPath + `/report-${dateTime}.xlsx`;
+        const destinationFilePath = RNFS.DownloadDirectoryPath + `/report-${dateTime}.xlsx`;
+
+        // Write generated excel to Storage
+        RNFS.writeFile(sourceFilePath, wbout, 'ascii').then((r)=>{
+          RNFS.moveFile(sourceFilePath, destinationFilePath)
+          .then(() => {
+            Alert.alert('Success', `File report-${dateTime}.xlsx Berhasil Disimpan di dalam Folder Download!`)
+          })
+          .catch((error) => {
+            console.log('Error moving file:', error);
+          });
+        }).catch((e)=>{
+            Alert.alert('Gagal', 'Gagal Menyimpan File!');
+        });
+    }).catch((e) => {
+        console.log('Error', e);
+    })
+  }
+
+  const handleClick = async () => {
+    console.log(Platform.constants['Release']);
+    if(Platform.OS === 'android' && Platform.constants['Release'] >= 13) {
+      exportDataToExcel();
+    } else {
+      try{
+        // Check for Permission (check if permission is already given or not)
+        let isPermitedExternalStorage = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+  
+        if(!isPermitedExternalStorage){
+  
+          // Ask for permission
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+              title: "Storage permission needed",
+              buttonNeutral: "Ask Me Later",
+              buttonNegative: "Cancel",
+              buttonPositive: "OK"
+            }
+          );
+  
+          
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            // Permission Granted (calling our exportDataToExcel function)
+            await exportDataToExcel();
+            console.log("Permission granted");
+          } else {
+            // Permission denied
+            console.log("Permission denied");
+          }
+        }else{
+           // Already have Permission (calling our exportDataToExcel function)
+           console.log("Harusnya nge export");
+           await exportDataToExcel();
+        }
+      }catch(e){
+        console.log('Error while checking permission');
+        console.log(e);
+        return
+      }
+
+    }
+    
+  };
+
+ 
+
+  const handleDwPress = () => {
+    console.log("Tanggal awal", (fDate));
+    console.log("Tanggal akhir", lDate);
+    console.log("DATA", data);
+    if(data) {
+      try {
+        const spesificData = getSpesificData(convertToDataArray(data));
+        setData(spesificData)
+      } catch(e) {
+        Alert.alert('Gagal', 'Data tidak ada, belum ditemukan data history tugas pada rentang tersebut!');
+      }
+    }
+    handleClick();
+  }
+
+
   return (
-    <View>
-      <Text>ExportDealerHistory</Text>
+    <>
+      <View>
+        <View style={{ width: 300 }}>
+          <Text style={{  color: isDarkMode ? 'black' : 'black', marginVertical: 30, marginHorizontal: 20, fontSize: 16 }}>Pilih tanggal tugas yang ingin diunduh dalam satu excel</Text>
+
+          <View style={{  marginVertical: 10, marginHorizontal: 20, }}>
+            <Text style={{  color: isDarkMode ? 'dimgray' : 'dimgray', fontSize: 16, marginBottom: 10 }}>Tanggal Awal</Text>
+            <DatePicker date={fDate} onDateChange={setfDate} textColor='gray'/>
+          </View>
+
+          <View style={{  marginVertical: 10, marginHorizontal: 20, }}>
+            <Text style={{  color: isDarkMode ? 'dimgray' : 'dimgray', fontSize: 16, marginBottom: 10 }}>Tanggal Akhir</Text>
+            <DatePicker date={lDate} onDateChange={setLDate} textColor='gray'/>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.cityButton}>
+      <TouchableHighlight activeOpacity={0.8} underlayColor="#1455A3" onPress={handleDwPress}>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <FontAwesomeIcon icon={faArrowDown} color='white' />
+          <Text style={{ fontWeight: "500", color: "#fff", marginLeft: 5 }}>
+            Unduh
+          </Text>
+        </View>
+      </TouchableHighlight>
+   
     </View>
+    </>
   )
 }
+
+const styles = StyleSheet.create({
+  cityButton: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: '#1455A3',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+
+    shadowColor: "gray",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+  }
+});
 
 export default ExportDealerHistory
