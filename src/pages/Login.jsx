@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, useColorScheme, Pressable } from 'react-native';
+
 import FIREBASE from '../config/firebase';
 import { getAuth, connectAuthEmulator, signInWithEmailAndPassword } from 'firebase/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,22 +8,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Login = ({ navigation }) => {
   const isDarkMode = useColorScheme() === 'dark';
 
+  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const auth = getAuth(FIREBASE);
 
-  const [userInfo, setUserInfo] = useState();
+  const [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
     checkLocalUser();
+    console.log("USERINFO", userInfo);
+  }, [])
 
+  useEffect(() => {
     if(userInfo) {
       navigation.navigate('Dealer');
+    } else {
+      navigation.navigate('Login');
     }
-
-
-  }, [])
+  }, [userInfo])
 
   const checkLocalUser = async () => {
     try {
@@ -72,34 +78,34 @@ const Login = ({ navigation }) => {
     );
   }
 
-  return (
-    <View style={styles.container}>
-      <Text style={{ color: isDarkMode ? 'black' : 'black'}}>Email</Text>
-      <TextInput
-        style={{ ...styles.inputStyle, color: isDarkMode ? 'black' : 'black' }}
-        placeholder="Email"
-        value={email}
-        onChangeText={(val) => setEmail(val)}
-      />
-      
-      <Text style={{ color: isDarkMode ? 'black' : 'black'}}>Password</Text>
-      <TextInput
-        style={styles.inputStyle}
-        placeholder="Password"
-        value={password}
-        onChangeText={(val) => setPassword(val)}
-        maxLength={15}
-        secureTextEntry={true}
-      />
-      <Pressable style={styles.loginButton}>
-        <Text style={{ color: 'white', textAlign: 'center' }} onPress={userLogin}>
+  return  (
+      <View style={styles.container}>
+        <Text style={{ color: isDarkMode ? 'black' : 'black' }}>Email</Text>
+        <TextInput
+          style={{ ...styles.inputStyle, color: isDarkMode ? 'black' : 'black' }}
+          placeholder="Email"
+          value={email}
+          onChangeText={(val) => setEmail(val)}
+        />
+        <Text style={{ color: isDarkMode ? 'black' : 'black' }}>Password</Text>
+        <TextInput
+          style={styles.inputStyle}
+          placeholder="Password"
+          value={password}
+          onChangeText={(val) => setPassword(val)}
+          maxLength={15}
+          secureTextEntry={true}
+        />
+        <Pressable style={styles.loginButton}>
+          <Text style={{ color: 'white', textAlign: 'center' }} onPress={userLogin}>
             Login
-        </Text>
-      </Pressable>
-    
-    </View>
+          </Text>
+        </Pressable>
+      </View>
   );
+  
 };
+
 
 const styles = StyleSheet.create({
   container: {

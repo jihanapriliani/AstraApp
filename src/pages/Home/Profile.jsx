@@ -53,7 +53,7 @@ const Profile = ({navigation, route}) => {
 
             <TouchableHighlight underlayColor={'white'} style={styles.actionButton} onPress={() => {
               signOut(auth)
-              AsyncStorage.setItem("@user", {});
+              AsyncStorage.removeItem("@user");
               navigation.navigate('Login')
             }}>
                 <>

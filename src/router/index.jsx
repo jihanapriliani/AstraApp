@@ -24,11 +24,13 @@ const Router = () => {
             component={Login}
             options={{ headerShown: false, title: "Log in" }} 
           />
+          
           <Stack.Screen
               name="Dealer"
               component={Home}
               options={{headerShown: true}}
           />
+          
           <Stack.Screen
               name="Profile"
               component={Profile}

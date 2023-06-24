@@ -1,5 +1,7 @@
 import { Text, StyleSheet, View, Button, TouchableHighlight, useColorScheme, ScrollView } from 'react-native'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigation, StackActions } from '@react-navigation/native';
+
 
 import ButtonGroup from '../../components/ButtonGroup';
 import Cards from '../../components/Cards';
@@ -8,19 +10,33 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 import { faBoxArchive } from '@fortawesome/free-solid-svg-icons/faBoxArchive'
 
-import {useAuth} from '../../hooks/useAuth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Home = (props) => {
   const isDarkMode = useColorScheme() === 'dark';
+
+  const refNavigation = useNavigation();
+
   const {navigation} = props;
   const [selectedCity, setSelectedCity] = useState("C03");
 
   const [active, setActive] = useState("dealer");
 
-  const { user } = useAuth(); 
+  const [user, setUser] = useState();
 
-
+  useEffect(() => {
+    
+    const fetchData = async () => {
+      const data = await AsyncStorage.getItem("@user");
+      if(data) {
+        setUser(JSON.parse(data));
+      }
+    };
+    fetchData();
+    
+  }, []);
+  
   return (
     <>
     <ScrollView>

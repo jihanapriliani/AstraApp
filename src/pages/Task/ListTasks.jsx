@@ -5,9 +5,6 @@ import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, u
 import { getDatabase, ref, child, get } from "firebase/database";
 import FIREBASE from '../../config/firebase';
 
-import ExportButtonTask from '../../components/ExportButtonTask';
-
-
 const ListTasks = ({route, navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -188,9 +185,7 @@ const ListTasks = ({route, navigation}) => {
 
                                                 </View>
                                     
-                                                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', padding: 8, paddingTop: 5 }}>
-                                                   <ExportButtonTask dealer={key} task={task_key} />
-                                                </View>
+                                              
                                             </View>
                                           </>
                                         </TouchableHighlight>
