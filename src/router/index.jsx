@@ -10,21 +10,24 @@ import ListTasks from '../pages/Task/ListTasks';
 import AddTask from '../pages/Task/AddTask';
 import DetailTask from '../pages/Task/DetailTask';
 import EditTask from '../pages/Task/EditTask';
+import Login from '../pages/Login';
 
 const Router = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      initialRouteName="Login"
+    >
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false, title: "Log in" }} 
+          />
           <Stack.Screen
               name="Dealer"
               component={Home}
               options={{headerShown: true}}
           />
-          <Stack.Screen
-            name="AddTask"
-            component={AddTask}
-            options={{headerShown: true}}
-          />
-          <Stack.Screen 
+           <Stack.Screen 
             name='ListTasks'
             component={ListTasks}
             options={{headerShown: true}}
@@ -35,7 +38,11 @@ const Router = () => {
             component={DetailTask}
             options={{headerShown: true}}
           />
-
+          <Stack.Screen
+            name="AddTask"
+            component={AddTask}
+            options={{headerShown: true}}
+          />
           <Stack.Screen 
             name='EditTask'
             component={EditTask}
