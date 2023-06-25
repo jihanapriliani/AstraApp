@@ -14,6 +14,7 @@ import Login from '../pages/Login';
 import Profile from '../pages/Home/Profile';
 import ChangePassword from '../pages/ChangePassword';
 import ExportDealerHistory from '../pages/Dealer/ExportDealerHistory';
+import Notifications from '../pages/Notifications';
 
 const Router = () => {
   return (
@@ -68,6 +69,12 @@ const Router = () => {
             name='DownloadHistory'
             component={ExportDealerHistory}
             options={{headerShown: true, title: 'Unduh History'}}
+          />
+
+          <Stack.Screen 
+            name='Notifications'
+            component={Notifications}
+            options={{headerShown: true, title: 'Notifikasi'}}
           />
 
     </Stack.Navigator>
