@@ -107,6 +107,17 @@ function formatDate(dateString) {
       padding: 10,
       display: 'flex',
       flexDirection: 'row',
+      marginBottom: 15,
+
+      shadowColor: "gray",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.23,
+      shadowRadius: 2.62,
+
+      elevation: 4,
      
       
     },
@@ -196,7 +207,7 @@ function formatDate(dateString) {
                             dues.map((due) => {
                                       const cardBG = getCardBg(due);
                                       return (
-                                        <TouchableHighlight>
+                                        <TouchableHighlight key={due.uploadedImage.uri}>
                                           <>
                                             <View>
                                                 <View style={styles.cardContent}>

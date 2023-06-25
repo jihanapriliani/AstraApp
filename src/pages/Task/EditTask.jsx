@@ -257,11 +257,11 @@ const AddTask = ({route, navigation}) => {
       <ImageUpload uploadedImage={uploadedImageProgress} setUploadedImage={setUploadedImageProgress} />
       
 
-      <Text style={styles.labelDate}>Tanggal Temuan</Text>
+      <Text style={styles.labelDate}>Tanggal Progress</Text>
       <DatePicker selectedDate={findingDate} setSelectedDate={setFindingDate} />
-
+{/* 
       <Text style={styles.labelDate}>Tanggal Tenggat</Text>
-      <DatePicker selectedDate={dueDate} setSelectedDate={setDueDate} />
+      <DatePicker selectedDate={dueDate} setSelectedDate={setDueDate} /> */}
 
       <SafeAreaView  style={styles.addButtonView}>
         <Button
