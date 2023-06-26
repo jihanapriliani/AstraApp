@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     text: {
         textAlign: 'center',
         color: '#000',
+        fontWeight: '600'
     }
 
 
