@@ -97,14 +97,17 @@ const Login = ({ navigation }) => {
 
   return  (
       <View style={styles.container}>
-        <Text style={{ color: isDarkMode ? 'black' : 'black' }}>Email</Text>
+
+        <Text style={{ ...styles.titleStyle, color: isDarkMode ? '#1455A3' : '#1455A3' }}>Login</Text>
+
+        <Text  style={{ ...styles.labelStyle, color: isDarkMode ? '#1455A3' : '#1455A3' }}>Email</Text>
         <TextInput
-          style={{ ...styles.inputStyle, color: isDarkMode ? 'black' : 'black' }}
+          style={{ ...styles.inputStyle, color: isDarkMode ? '#1455A3' : '#1455A3' }}
           placeholder="Email"
           value={email}
           onChangeText={(val) => setEmail(val)}
         />
-        <Text style={{ color: isDarkMode ? 'black' : 'black' }}>Password</Text>
+        <Text style={{ ...styles.labelStyle, color: isDarkMode ? '#1455A3' : '#1455A3' }}>Password</Text>
         <TextInput
           style={styles.inputStyle}
           placeholder="Password"
@@ -129,19 +132,54 @@ const styles = StyleSheet.create({
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 35,
-    backgroundColor: '#fff'
+    paddingTop: 150,
+    backgroundColor: '#F8F8F8',
+    position: 'relative'
   },
+
+  titleStyle: {
+    fontSize: 24,
+    fontWeight: '700',
+    textAlign: 'center',
+    margin: 20,
+  },
+
   inputStyle: {
     width: '100%',
     marginBottom: 15,
     paddingBottom: 15,
+    paddingLeft: 15,
     alignSelf: "center",
     borderColor: "#ccc",
     borderBottomWidth: 1,
     color: '#1455A3',
+    backgroundColor: 'white',
+    borderBottomWidth: 0,
+    borderRadius: 20,
+
+    shadowColor: "#d9d6ce",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+
+    elevation: 6,
+
+    marginBottom: 20
   },
+
+  labelStyle: {
+    color: '#1455A3',
+    fontWeight: '500',
+    fontSize: 14,
+    marginLeft: 10,
+    marginBottom: 5,
+  },
+
   loginText: {
     color: '#1455A3',
     marginTop: 25,
@@ -150,6 +188,21 @@ const styles = StyleSheet.create({
   loginButton: {
     backgroundColor: '#1455A3',
     padding: 15,
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    left: 20,
+    borderRadius: 20,
+
+    shadowColor: "#d9d6ce",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+
+    elevation: 6,
     
   },
   preloader: {
