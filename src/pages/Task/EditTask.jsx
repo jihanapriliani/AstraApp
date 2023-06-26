@@ -48,12 +48,14 @@ const AddTask = ({route, navigation}) => {
         setSelectedStatus(data.status);   
         
         
+        
         const storage = getStorage(FIREBASE);
         const fileName = image_id.uri.substring(image_id.uri.lastIndexOf('/') + 1);
         const reference = refStorage(storage, `images/${fileName}`);
-        getDownloadURL(reference).then(url => setUrl(url));
 
-        setUploadedImageProgress({uri: url});
+       
+          getDownloadURL(reference).then(url => setUrl(url));
+          setUploadedImageProgress({uri: url});
     }, [])
 
 
@@ -65,7 +67,8 @@ const AddTask = ({route, navigation}) => {
   }
 
   const handleEditButtonClicked = () => {
-    if(data.taskTitle) {
+   
+    if(data.taskTitle && uploadedImageProgress.uri) {
         const database = getDatabase(FIREBASE);
 
 
@@ -74,7 +77,7 @@ const AddTask = ({route, navigation}) => {
           status: selectedStatus,
           repairActivity,
           PICDealer,
-          uploadedImage: uploadedImageProgress,
+          uploadedImage: uploadedImageProgress || data.uploadedImage,
           findingDate: formatDate(findingDate),
           dueDate: data.dueDate,
           httpUrlImage: findingImage
@@ -91,7 +94,7 @@ const AddTask = ({route, navigation}) => {
           httpUrlImage: findingImage,
           activityProgess: repairActivity,
           progressDate: formatDate(findingDate),
-          progressImage: uploadedImageProgress,
+          progressImage: uploadedImageProgress || data.uploadedImage,
           progressPIC: PICDealer,
         }
 
@@ -118,42 +121,46 @@ const AddTask = ({route, navigation}) => {
 
   const uploadImage = async () => {
     try {
-      const storage = getStorage(FIREBASE);
-      const fileName = uploadedImageProgress.uri.substring(uploadedImageProgress.uri.lastIndexOf('/') + 1);
-      const storageRef = refStorage(storage, 'images/' + fileName);
-
-      //convert image to array of bytes
-      const img = await fetch(uploadedImageProgress.uri);
-      const bytes = await img.blob(); 
-      
-      const uploadTask = uploadBytesResumable(storageRef, bytes);
-      
-      uploadTask.on('state_changed', 
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-          switch (snapshot.state) {
-            case 'paused':
-              console.log('Upload is paused');
-              break;
-            case 'running':
-              console.log('Upload is running');
-              break;
-          }
-        }, 
-        (error) => {
-         console.error(error);
-        }, 
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setfindingImage(downloadURL);
-            console.log('File available at', downloadURL);
-          });
+        if(uploadedImageProgress) {
+          const storage = getStorage(FIREBASE);
+          const fileName = uploadedImageProgress.uri.substring(uploadedImageProgress.uri.lastIndexOf('/') + 1);
+          const storageRef = refStorage(storage, 'images/' + fileName);
+    
+          //convert image to array of bytes
+          const img = await fetch(uploadedImageProgress.uri);
+          const bytes = await img.blob(); 
+          
+          const uploadTask = uploadBytesResumable(storageRef, bytes);
+          
+          uploadTask.on('state_changed', 
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log('Upload is ' + progress + '% done');
+              switch (snapshot.state) {
+                case 'paused':
+                  console.log('Upload is paused');
+                  break;
+                case 'running':
+                  console.log('Upload is running');
+                  break;
+              }
+            }, 
+            (error) => {
+            console.error(error);
+            }, 
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                setfindingImage(downloadURL);
+                console.log('File available at', downloadURL);
+              });
+            }
+          );
+        } else {
+          Alert.alert('Gagal', 'Tolong Masukkan Dokumentasi Progress!');
         }
-      );
-    } catch(e) {
-      console.error(e);
-    }
+      } catch(e) {
+        console.error(e);
+      }
 
   }
 
@@ -253,7 +260,7 @@ const AddTask = ({route, navigation}) => {
           placeholder='Tuliskan lokasi temuan'
         />
 
-      <Text style={styles.label}>Dokumentasi Temuan</Text>
+      <Text style={styles.label}>Dokumentasi Progress</Text>
       <ImageUpload uploadedImage={uploadedImageProgress} setUploadedImage={setUploadedImageProgress} />
       
 
