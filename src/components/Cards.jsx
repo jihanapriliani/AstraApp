@@ -41,13 +41,22 @@ const Cards = props => {
     cardWrapper: {
       marginHorizontal: 20,
       marginVertical: 10,
-      height: 130,
+      maxHeight: 130,
       borderRadius: 20,
       backgroundColor: "#417CC2",
       display: 'flex',
-      paddingTop: 15,
-      // justifyContent: 'center',
-      alignItems: 'center'
+      paddingVertical: 15,
+      alignItems: 'center',
+
+      shadowColor: "gray",
+      shadowOffset: {
+        width: 0,
+        height: 3,
+      },
+      shadowOpacity: 0.27,
+      shadowRadius: 4.65,
+
+      elevation: 6,
     },
   
     cardContent: {
@@ -58,36 +67,16 @@ const Cards = props => {
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      paddingLeft: 10
+      padding: 10
       // justifyContent: 'center'
     },
 
     cirle: {
       width: 20,
       height: 20,
+      marginRight: 5,
       borderRadius: 10,
       backgroundColor: "#D9D9D9"
-    },
-
-    dotContainer: {
-      height: 20,
-      width: 30,
-      backgroundColor: 'white',
-      marginRight: 5,
-      marginTop: 10,
-      fontSize: 20,
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 10,
-    },
-
-    dot : {
-      fontSize: 20,
-      lineHeight: 15,
-      color: '#417CC2',
-      fontWeight: 'bold',
     }
   });
 
@@ -107,12 +96,6 @@ const Cards = props => {
                                 <Text style={styles.cardTitle}>
                                     {dealers[key]}
                                 </Text>
-                            </View>
-                
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                              
-                              <ExportButtonDealer dealer={key} />
-                               
                             </View>
                         </View>
                     </TouchableHighlight>
