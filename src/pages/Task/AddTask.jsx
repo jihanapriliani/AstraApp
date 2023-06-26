@@ -38,7 +38,7 @@ const AddTask = ({route, navigation}) => {
 
 
   const handleAddButtonClicked = () => {
-    if(taskTitle) {
+    if(taskTitle && uploadImage.uri) {
       // && status && repairActivity && uploadedImage != null && PICDealer && findingDate != {} && dueDate != {}
         const database = getDatabase(FIREBASE);
 
