@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
-import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, useColorScheme} from 'react-native';
+import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, useColorScheme, BackHandler} from 'react-native';
 
 import { getDatabase, ref, child, get } from "firebase/database";
 import FIREBASE from '../../config/firebase';
@@ -9,20 +9,70 @@ const ListTasks = ({route, navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const { key , dealer, dealer_id } = route.params;
-
-
   const [tasks, setTasks] = useState({});
 
-  const database = ref(getDatabase(FIREBASE));
-  get(child(database, `Tasks/${key}`)).then((snapshot) => {
-    if (snapshot.exists()) {
-     setTasks(snapshot.val());
-    } else {
-      console.log("No data available");
-    }
-  }).catch((error) => {
-    console.error(error);
-  });
+  const [listStatus, setListStatus] = useState({})
+
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true; 
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
+
+  
+  useEffect(() => {
+    const database = ref(getDatabase(FIREBASE));
+    get(child(database, `Tasks/${key}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+       setTasks(snapshot.val());
+      } 
+    }).catch((error) => {
+      console.error(error);
+    });
+
+  }, [])
+
+  useEffect(() => {
+    getAllStatus(tasks);
+  }, [tasks])
+
+  const getAllStatus = allStatus => {
+    const currentStatus = {idle:0, onprogress: 0, done: 0, drop: 0}
+    const filteredStatuses = Object.keys(allStatus).filter(key => key !== "dummy" && allStatus[key]);
+    const data = filteredStatuses.map(key => allStatus[key].status);
+    data.forEach(status => {
+      if(status === "idle") {
+        currentStatus["idle"] += 1;
+      }
+
+      if(status === "onprogress") {
+        currentStatus["onprogress"] += 1;
+      }
+
+      if(status === "done") {
+        currentStatus["done"] += 1;
+      }
+
+      if(status === "drop") {
+        currentStatus["drop"] += 1;
+      }
+    });
+    
+    setListStatus(currentStatus);
+  }
+  
+
+  
 
   const styles = StyleSheet.create({
 
@@ -143,10 +193,10 @@ const ListTasks = ({route, navigation}) => {
             <Text style={{  color: isDarkMode ? 'black' : 'black', marginLeft: 20, marginVertical: 20, fontSize: 24, width: '85%', fontWeight: '600' }}>{dealer}</Text>
             
             <View style={{ width: '85%', height: 5, marginHorizontal: 20, display: 'flex', 'flexDirection': 'row' }}>
-                <View style={{ flex: 1, backgroundColor: "#AED45C" }}></View>
-                <View style={{ flex: 1, backgroundColor: "#417CC2" }}></View>
-                <View style={{ flex: 1, backgroundColor: "#FDCA40" }}></View>
-                <View style={{ flex: 1, backgroundColor: "#DD2C32" }}></View>
+                <View style={{ flex: listStatus["done"], backgroundColor: "#AED45C" }}></View>
+                <View style={{ flex: listStatus["onprogress"], backgroundColor: "#417CC2" }}></View>
+                <View style={{ flex: listStatus["idle"], backgroundColor: "#FDCA40" }}></View>
+                <View style={{ flex: listStatus["drop"], backgroundColor: "#DD2C32" }}></View>
             </View>
 
             <TouchableHighlight onPress={() => navigation.navigate('DownloadHistory', {dealer_id: dealer_id})}>
