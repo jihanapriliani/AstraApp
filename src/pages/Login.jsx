@@ -19,15 +19,32 @@ const Login = ({ navigation }) => {
 
   useEffect(() => {
     checkLocalUser();
-    console.log("USERINFO", userInfo);
+    console.log(userInfo);
   }, [])
 
   useEffect(() => {
-    if(userInfo) {
-      navigation.navigate('Dealer');
-    } else {
-      navigation.navigate('Login');
-    }
+    const getUid = async () => {
+      try {
+        const data = await AsyncStorage.getItem('@user');
+        return data;
+      } catch (error) {
+        console.log(error);
+        return null; // atau nilai default jika terjadi kesalahan
+      }
+    };
+
+    getUid()
+    .then((data) => {
+      if(data && userInfo) {
+        navigation.navigate('Dealer');
+      } else {
+        navigation.navigate('Login');
+
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    })
   }, [userInfo])
 
   const checkLocalUser = async () => {
