@@ -80,7 +80,7 @@ const Home = (props) => {
             <View style={{ display: 'flex', flexDirection: 'row'}}>
 
             <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
-              <Text style={{ color: isDarkMode ? '' : '',marginRight: 30 }}>
+              <Text style={{ color: isDarkMode ? '' : '',marginRight: 10 }}>
                 <FontAwesomeIcon icon={faBell} size={20} />
               </Text>
             </TouchableOpacity>

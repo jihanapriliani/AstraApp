@@ -23,7 +23,7 @@ const ExportDealerHistory = ({route, navigation}) => {
   const [fDate, setfDate] = useState(new Date());
   const [lDate, setLDate] = useState(new Date());
 
-  const {dealer_id} = route.params;
+  const {dealer_id, dealer} = route.params;
   const [data, setData] = useState({});
 
   useEffect(() => {
@@ -37,9 +37,9 @@ const ExportDealerHistory = ({route, navigation}) => {
     }).catch((error) => {
       console.error(error);
     });
+}, [data, dealer_id, fDate, lDate])
 
-    // getSpesificData()
-}, [])
+
 
 
 
@@ -53,8 +53,10 @@ const getSpesificData = (data) => {
     return dueDate >= startDate && dueDate <= endDate;
   });
   
+  
   return tasksInRange;
 }
+
 
 
 
@@ -73,27 +75,102 @@ const getCurrentDateTime = () => {
 };
 
 
- const convertToDataArray = () => {
-    const dataArray = [];
+//  const convertToDataArray = () => {
+//     const dataArray = [];
 
-    for (const taskId in data) {
-        for (const subTaskId in data[taskId]) {
-            const task = {
-            idTask: taskId,
-            subTaskId: subTaskId,
-            ...data[taskId][subTaskId]
-            };
-            dataArray.push(task);
-        }
-    }
-    return(dataArray)
- }
+//     for (const taskId in data) {
+//         for (const subTaskId in data[taskId]) {
+//             const task = {
+//             idTask: taskId,
+//             subTaskId: subTaskId,
+//             ...data[taskId][subTaskId]
+//             };
+//             dataArray.push(task);
+//         }
+//     }
+//     return(dataArray)
+//  }
+
+const convertDataID = (data) => {
+  const convertedData = data.map((item, index) => {
+    const {
+      PICDealer,
+      activityProgess,
+      dueDate,
+      findingDate,
+      progressDate,
+      progressImage,
+      uploadedImage,
+      repairActivity,
+      status,
+      taskTitle,
+      progressPIC,
+    } = item;
+
+    return {
+      "No": index + 1,
+      "Nama Temuan": taskTitle,
+      "Activity Temuan": repairActivity,
+      "Dealer": dealer,
+      "Dokumentasi Temuan": uploadedImage,
+      "Tanggal Temuan": findingDate,
+      "Tanggal Tenggat Temuan": dueDate,
+      "PIC yang Melakukan Temuan": PICDealer,
+      "Activity Progress Perbaikan": activityProgess,
+      "Dokumentasi Perbaikan": progressImage,
+      "Tanggal Progress Perbaikan": progressDate,
+      "PIC Yang Melakukan Pengecekan Perbaikan": progressPIC,
+      "Status": status
+    };
+  });
+
+  return convertedData;
+};
+
+const convertToDataArray = () => {
+  const dataArray = [];
+
+  for (const taskId in data) {
+      for (const subTaskId in data[taskId]) {
+          const task = {
+              idTask: taskId,
+              subTaskId: subTaskId,
+              ...data[taskId][subTaskId]
+          };
+
+          // Mengambil nilai dari key 'uri' pada progressImage
+          if (task.progressImage) {
+              const progressImageUrls = task.progressImage.uri;
+              task.progressImage = progressImageUrls;
+          }
+
+          // Mengambil nilai dari key 'uri' pada uploadedImage
+          if (task.uploadedImage) {
+              const uploadedImageUrls = task.uploadedImage.uri;
+              task.uploadedImage = uploadedImageUrls;
+          }
+
+          delete task.httpUrlImage;
+          delete task.subTaskId;
+          delete task.taskId;
+          
+          dataArray.push(task);
+      }
+  }
+
+  return dataArray;
+}
+
 
 
 const exportDataToExcel = () => {
     const dateTime = getCurrentDateTime();
     let wb = XLSX.utils.book_new();
-    let ws = XLSX.utils.json_to_sheet(convertToDataArray(data))    
+
+    const convertedData = convertToDataArray(data);
+    const formattedData = convertDataID(convertedData);
+
+    let ws = XLSX.utils.json_to_sheet(formattedData)    
     XLSX.utils.book_append_sheet(wb,ws,"Users")
     const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
 

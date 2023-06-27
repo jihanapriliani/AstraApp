@@ -86,22 +86,9 @@ function formatDate(dateString) {
       color: isDarkMode ? 'black' : 'black',
     },
   
-    cardWrapper: {
-      marginHorizontal: 20,
-      marginVertical: 10,
-      minHeight: 130,
-      borderRadius: 20,
-      backgroundColor: "#417CC2",
-      display: 'flex',
-      paddingTop: 15,
-      // justifyContent: 'center',
-      alignItems: 'center',
-
-    },
-  
     cardContent: {
       borderRadius: 10,
-      width: 320,
+      width: '95%',
       minHeight: 70,
       backgroundColor: "#F8F8F8",
       display: 'flex',
@@ -253,7 +240,7 @@ function formatDate(dateString) {
                                       return (
                                         <TouchableHighlight key={due.uploadedImage.uri}>
                                           <>
-                                            <View>
+                                            <View style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                                                 <View style={styles.cardContent}>
                                                   <View  style={styles.cardTitleWrapper}>
                                                     <View style={{ ...styles.circle, backgroundColor: cardBG }}></View>

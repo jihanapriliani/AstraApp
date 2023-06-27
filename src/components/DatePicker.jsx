@@ -53,6 +53,7 @@ export default (props) => {
       <DatePicker
         modal
         open={open}
+        mode='date'
         date={selectedDate}
         onConfirm={(date) => {
           setOpen(false)

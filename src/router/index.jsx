@@ -16,11 +16,7 @@ import ChangePassword from '../pages/ChangePassword';
 import ExportDealerHistory from '../pages/Dealer/ExportDealerHistory';
 import Notifications from '../pages/Notifications';
 
-import Notification from '../components/Notification';
-
 const Router = () => {
-  Notification()
-
   return (
     <Stack.Navigator
       initialRouteName="Login"

@@ -96,6 +96,7 @@ const ListTasks = ({route, navigation}) => {
       borderRadius: 20,
       backgroundColor: "#417CC2",
       display: 'flex',
+      width: '90%',
       paddingTop: 15,
       // justifyContent: 'center',
       alignItems: 'center',
@@ -104,7 +105,7 @@ const ListTasks = ({route, navigation}) => {
   
     cardContent: {
       borderRadius: 10,
-      width: 280,
+      width: '90%',
       minHeight: 70,
       backgroundColor: "#F8F8F8",
       display: 'flex',
@@ -200,7 +201,7 @@ const ListTasks = ({route, navigation}) => {
                 </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity  onPress={() => navigation.navigate('DownloadHistory', {dealer_id: dealer_id})}>
+        <TouchableOpacity  onPress={() => navigation.navigate('DownloadHistory', {dealer_id: dealer_id, dealer: dealer})}>
                 <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10}}>
                     <FontAwesomeIcon icon={faDownload} color='black' />
                 </Text>
