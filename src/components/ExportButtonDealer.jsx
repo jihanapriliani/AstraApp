@@ -69,7 +69,17 @@ const ExportButtonDealer = (props) => {
     console.log("data dealer  " + data);
 
     let wb = XLSX.utils.book_new();
-    let ws = XLSX.utils.json_to_sheet(convertToDataArray(data))    
+    let ws = XLSX.utils.json_to_sheet(convertToDataArray(data)) 
+    
+    const headers = ["ID Tugas", "No Riwayat Tugas", "PIC yang Melakukan Temuan", "Activity Temuan", "Tanggal Tenggat", "Tanggal Temuan", "URL Gambar(Tidak Ada) ", "Tanggal Progress", "Dokumentasi Progress", "PIC yang Melakukan Progress", "Activity Perbaikan Progress", "Status", "Nama Temuan", "Dokumentasi Temuan"]
+    ws['!rows'] = [{ hpx: 30 }];
+
+    headers.forEach((header, index) => {
+      const cellRef = XLSX.utils.encode_cell({ c: index, r: 0 }); // Koordinat cell header
+      ws[cellRef] = { v: header, t: 's', s: { bold: true, alignment: { horizontal: 'center' } } }; // Gaya teks header
+    });
+  
+
     XLSX.utils.book_append_sheet(wb,ws,"Users")
     const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
 

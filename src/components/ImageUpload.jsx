@@ -48,7 +48,7 @@ const ImageUpload = (props) => {
     return (
         <SafeAreaView style={styles.container}>
           <TouchableOpacity style={styles.selectButton} onPress={selectImage}>
-            <Text style={styles.buttonText}>Pilih Gambar</Text>
+            <Text style={styles.buttonText}>+</Text>
           </TouchableOpacity>
           <View style={styles.imageContainer}>
             {uploadedImage !== null ? (
@@ -69,15 +69,18 @@ const ImageUpload = (props) => {
 
   const styles = StyleSheet.create({
     container : {
-      marginLeft: 20,
-      marginTop: 20
+      marginTop: 20,
+      display: "flex",
+      flexDirection: "row-reverse",
+      justifyContent: 'flex-end',
+      alignItems: 'center'
     },
 
     selectButton: {
       borderRadius: 5,
-      width: 120,
-      height: 50,
-      backgroundColor: '#8ac6d1',
+      width: 100,
+      height: 100,
+      backgroundColor: '#D3D3D3',
       alignItems: 'center',
       justifyContent: 'center'
     },
@@ -88,23 +91,21 @@ const ImageUpload = (props) => {
       backgroundColor: '#ffb6b9',
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: 20
+      // marginTop: 20,
     },
     buttonText: {
       color: 'white',
-      fontSize: 14,
+      fontSize: 20,
       fontWeight: 'bold'
     },
     imageContainer: {
-      marginTop: 30,
-      marginBottom: 50,
       alignItems: 'center',
       display: 'flex',
       flexDirection: 'row',
       position: 'relative'
     },
     progressBarContainer: {
-      marginTop: 20
+      // marginTop: 20
     },
     imageBox: {
       width: 100,

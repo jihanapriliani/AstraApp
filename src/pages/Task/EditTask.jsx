@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {SafeAreaView, StyleSheet, TextInput, Text, Button, Alert, View, ScrollView, useColorScheme} from 'react-native';
+import {SafeAreaView, StyleSheet, TextInput, Text, Button, Alert, View, ScrollView, useColorScheme, TouchableOpacity, TouchableHighlight} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import DatePicker from '../../components/DatePicker';
 
@@ -7,6 +7,18 @@ import { getDatabase, ref, push, child, set, get, update} from "firebase/databas
 import {  getStorage, ref as refStorage, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import FIREBASE from '../../config/firebase';
 
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft'
+import { faArrowsSpin } from '@fortawesome/free-solid-svg-icons/faArrowsSpin'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass'
+import { faBars } from '@fortawesome/free-solid-svg-icons/faBars'
+import { faCamera } from '@fortawesome/free-solid-svg-icons/faCamera'
+import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
+import { faGear } from '@fortawesome/free-solid-svg-icons/faGear'
+import { faCalendarDays } from '@fortawesome/free-solid-svg-icons/faCalendarDays'
+import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil'
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons/faTrashCan'
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 
 import ImageUpload from '../../components/ImageUpload';
 
@@ -68,7 +80,7 @@ const AddTask = ({route, navigation}) => {
 
   const handleEditButtonClicked = () => {
    
-    if(data.taskTitle && uploadedImageProgress.uri) {
+    if(data.taskTitle && uploadedImageProgress) {
         const database = getDatabase(FIREBASE);
 
 
@@ -79,7 +91,7 @@ const AddTask = ({route, navigation}) => {
           PICDealer,
           uploadedImage: uploadedImageProgress || data.uploadedImage,
           findingDate: formatDate(findingDate),
-          dueDate: data.dueDate,
+          dueDate: formatDate(dueDate),
           httpUrlImage: findingImage
         };
 
@@ -90,7 +102,7 @@ const AddTask = ({route, navigation}) => {
           PICDealer: data.PICDealer,
           uploadedImage: data.uploadedImage,
           findingDate: data.findingDate,
-          dueDate: data.dueDate,
+          dueDate: formatDate(dueDate),
           httpUrlImage: findingImage,
           activityProgess: repairActivity,
           progressDate: formatDate(findingDate),
@@ -175,9 +187,11 @@ const AddTask = ({route, navigation}) => {
   
     input: {
       height: 40,
-      margin: 20,
+      width: 280,
+      placeholderTextColor: isDarkMode ? 'gray' : 'gray',
       marginBottom: 0,
-      borderWidth: 1,
+      border: 0,
+      borderBottomWidth: 1,
       borderRadius: 10,
       borderColor: "lightgray",
       padding: 10,
@@ -212,75 +226,164 @@ const AddTask = ({route, navigation}) => {
       position:'absolute',
       bottom: 10,
       right: 10
+    },
+
+    headerText: {
+      fontSize: 24,
+      fontWeight: '600',
+
+    },
+
+
+    cityButton: {
+      position: 'absolute',
+      bottom: 10,
+      right: 10,
+      width: 65, 
+      height: 65,
+      backgroundColor: '#1455A3',
+      borderRadius: 30,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+
+      shadowColor: "gray",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+  
+      elevation: 5,
     }
     
   });
 
 
   return (
-    <ScrollView>
-      <SafeAreaView style={styles.view}>
-        <Text style={styles.label}>Nama Temuan</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setTaskTitle}
-          value={data.taskTitle}
-          placeholder='Tuliskan nama tugas'
-        />
+    <>
+       <View style={{ paddingHorizontal: 20, paddingVertical: 15, display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff'}}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10}}>
+                    <FontAwesomeIcon icon={faChevronLeft} color='black' />
+                </Text>
+        </TouchableOpacity>
+                <View>
+                  <Text style={{ ...styles.headerText, color: isDarkMode ? '#212121' : '#212121' }}>{data.taskTitle}</Text>
+        </View>
+        </View>
+      <ScrollView>
+        <SafeAreaView style={styles.view}>
 
-      <Text style={styles.label}>Status</Text>
-          <Picker
-              selectedValue={selectedStatus}
-              style={{ height: 50, width: 250, marginLeft: 10, color: isDarkMode ? 'gray' : 'gray', backgroundColor: isDarkMode ? 'lightgray' : 'lightgray', marginTop: 20, marginLeft: 20, borderRadius: 20 }}
-              onValueChange={(itemValue, itemIndex) => setSelectedStatus(itemValue)}
-          >
-            <Picker.Item label="Pilih Status" />
-            <Picker.Item label="On Progress" value="onprogress"/>
-            <Picker.Item label="Done" value="done" />
-            <Picker.Item label="Idle" value="idle" />
-            <Picker.Item label="Drop" value="drop" />
-          </Picker>
+        <View style={{ maxWidth: 320, marginLeft: 20,marginTop: 15, display: 'flex', flexDirection: 'row' }}>
+              <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <FontAwesomeIcon icon={faGear} color='black' />
+              </View>
 
-      
-      <Text style={styles.label}>Aktifitas Perbaikan</Text>
-        <TextInput
-          multiline={true}
-          numberOfLines={4}
-          style={styles.inputTextArea}
-          onChangeText={setRepairActivity}
-          value={repairActivity}
-          placeholder='Tuliskan aktifitas perbaikan'
-        />
+              <View>
+                <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Status</Text>
+                <Picker
+                selectedValue={selectedStatus}
+                style={{ height: 40, width: 280, color: isDarkMode ? 'gray' : 'gray', backgroundColor: isDarkMode ? 'white' : 'white', borderRadius: 20 }}
+                onValueChange={(itemValue, itemIndex) => setSelectedStatus(itemValue)}
+                >
+                  <Picker.Item label="Pilih Status" />
+                  <Picker.Item label="On Progress" value="onprogress"/>
+                  <Picker.Item label="Done" value="done" />
+                  <Picker.Item label="Idle" value="idle" />
+                  <Picker.Item label="Drop" value="drop" />
+                </Picker>
+              </View>
+        </View>
 
-      <Text style={styles.label}>Nama PIC yang Menemukan</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setPICDealer}
-          value={PICDealer}
-          placeholder='Tuliskan lokasi temuan'
-        />
 
-      <Text style={styles.label}>Dokumentasi Progress</Text>
-      <ImageUpload uploadedImage={uploadedImageProgress} setUploadedImage={setUploadedImageProgress} />
-      
+        <View style={{ maxWidth: 320, marginLeft: 20,marginTop: 15, display: 'flex', flexDirection: 'row' }}>
+              <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <FontAwesomeIcon icon={faBars} color='black' />
+              </View>
 
-      <Text style={styles.labelDate}>Tanggal Progress</Text>
-      <DatePicker selectedDate={findingDate} setSelectedDate={setFindingDate} />
-{/* 
-      <Text style={styles.labelDate}>Tanggal Tenggat</Text>
-      <DatePicker selectedDate={dueDate} setSelectedDate={setDueDate} /> */}
+              <View>
+                <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Activity Progress Perbaikan</Text>
+                <TextInput
+                    style={styles.input}
+                    onChangeText={setRepairActivity}
+                    value={repairActivity}
+                    placeholder='Tuliskan activity perbaikan'
+                  />
+              </View>
+        </View>
+
+        <View style={{ maxWidth: 320, marginLeft: 20,marginTop: 15, display: 'flex', flexDirection: 'row' }}>
+              <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <FontAwesomeIcon icon={faCamera} color='black' />
+              </View>
+
+              <View>
+                <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Dokumentasi Progress Perbaikan</Text>
+                <ImageUpload uploadedImage={uploadedImageProgress} setUploadedImage={setUploadedImageProgress} />
+              </View>
+          </View>
+
+
+          <View style={{ maxWidth: 320, marginLeft: 20,marginTop: 15, display: 'flex', flexDirection: 'row' }}>
+              <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <FontAwesomeIcon icon={faUser} color='black' />
+              </View>
+
+              <View>
+                <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Nama PIC yang Melakukan Pengecekan Perbaikan</Text>
+                <TextInput
+                    style={styles.input}
+                    onChangeText={setPICDealer}
+                    value={PICDealer}
+                    placeholder='Tuliskan activity perbaikan'
+                  />
+              </View>
+          </View>
+
+          <View style={{ maxWidth: 320, marginLeft: 20,marginTop: 15, display: 'flex', flexDirection: 'row' }}>
+              <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <FontAwesomeIcon icon={faCalendarDays} color='black' />
+              </View>
+
+              <View>
+                <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Tanggal Progress Perbaikan</Text>
+             
+              <DatePicker selectedDate={findingDate} setSelectedDate={setFindingDate} />
+              </View>
+          </View>
+
+          <View style={{ maxWidth: 320, marginLeft: 20,marginTop: 15, display: 'flex', flexDirection: 'row' }}>
+              <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <FontAwesomeIcon icon={faCalendarDays} color='black' />
+              </View>
+
+              <View>
+                <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Tanggal Tenggat Tugas</Text>
+             
+              <DatePicker selectedDate={dueDate} setSelectedDate={setDueDate} />
+              </View>
+          </View>
+
+    
+        </SafeAreaView>
+      </ScrollView>
+
 
       <SafeAreaView  style={styles.addButtonView}>
-        <Button
-          onPress={handleEditButtonClicked}
-          title="Perbarui Tugas"
-          accessibilityLabel="Add this new task"
-        />
-      </SafeAreaView>
-
-
-      </SafeAreaView>
-    </ScrollView>
+           <View style={styles.cityButton}>
+              <TouchableHighlight activeOpacity={0.8} underlayColor="#1455A3"  onPress={handleEditButtonClicked}>
+                <Text style={{ fontWeight: "500", color: "#fff" }}>
+                  <FontAwesomeIcon icon={faCheck} color='white' size={30} />
+                </Text>
+              </TouchableHighlight>
+            </View>
+        </SafeAreaView>
+    </>
   );
 };
 

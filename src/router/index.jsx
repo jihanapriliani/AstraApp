@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
@@ -16,7 +16,11 @@ import ChangePassword from '../pages/ChangePassword';
 import ExportDealerHistory from '../pages/Dealer/ExportDealerHistory';
 import Notifications from '../pages/Notifications';
 
+import Notification from '../components/Notification';
+
 const Router = () => {
+  Notification()
+
   return (
     <Stack.Navigator
       initialRouteName="Login"
@@ -30,13 +34,18 @@ const Router = () => {
           <Stack.Screen
               name="Dealer"
               component={Home}
-              options={{headerShown: true}}
+              options={{
+                headerBackTitleVisible: false,
+                headerBackVisible: false,
+                headerShown: false
+              }}
+          
           />
           
           <Stack.Screen
               name="Profile"
               component={Profile}
-              options={{headerShown: true}}
+              options={{headerShown: false}}
           />
           <Stack.Screen
               name="ChangePassword"
@@ -46,35 +55,35 @@ const Router = () => {
            <Stack.Screen 
             name='ListTasks'
             component={ListTasks}
-            options={{headerShown: true}}
+            options={{headerShown: false}}
           />
 
           <Stack.Screen 
             name='DetailTask'
             component={DetailTask}
-            options={{headerShown: true}}
+            options={{headerShown: false}}
           />
           <Stack.Screen
             name="AddTask"
             component={AddTask}
-            options={{headerShown: true}}
+            options={{headerShown: false}}
           />
           <Stack.Screen 
             name='EditTask'
             component={EditTask}
-            options={{headerShown: true}}
+            options={{headerShown: false}}
           />
 
           <Stack.Screen 
             name='DownloadHistory'
             component={ExportDealerHistory}
-            options={{headerShown: true, title: 'Unduh History'}}
+            options={{headerShown: false}}
           />
 
           <Stack.Screen 
             name='Notifications'
             component={Notifications}
-            options={{headerShown: true, title: 'Notifikasi'}}
+            options={{headerShown: false}}
           />
 
     </Stack.Navigator>

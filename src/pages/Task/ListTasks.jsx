@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from 'react';
 
-import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, useColorScheme, BackHandler} from 'react-native';
+import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, useColorScheme, BackHandler, TouchableOpacity} from 'react-native';
 
 import { getDatabase, ref, child, get } from "firebase/database";
 import FIREBASE from '../../config/firebase';
+
+
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft'
+import { faDownload } from '@fortawesome/free-solid-svg-icons/faDownload'
 
 const ListTasks = ({route, navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -188,6 +193,20 @@ const ListTasks = ({route, navigation}) => {
   return (
   <>
     <ScrollView>
+      <View style={{ marginHorizontal: 20, marginVertical: 15, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10}}>
+                    <FontAwesomeIcon icon={faChevronLeft} color='black' />
+                </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity  onPress={() => navigation.navigate('DownloadHistory', {dealer_id: dealer_id})}>
+                <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10}}>
+                    <FontAwesomeIcon icon={faDownload} color='black' />
+                </Text>
+        </TouchableOpacity>
+
+      </View>
 
       <View style={{ display: 'flex', justifyContent: 'center', paddingBottom: 100, }}>
             <Text style={{  color: isDarkMode ? 'black' : 'black', marginLeft: 20, marginVertical: 20, fontSize: 24, width: '85%', fontWeight: '600' }}>{dealer}</Text>
@@ -199,17 +218,11 @@ const ListTasks = ({route, navigation}) => {
                 <View style={{ flex: listStatus["drop"], backgroundColor: "#DD2C32" }}></View>
             </View>
 
-            <TouchableHighlight onPress={() => navigation.navigate('DownloadHistory', {dealer_id: dealer_id})}>
-              <Text  style={{  color: isDarkMode ? 'gray' : 'gray', marginVertical: 30, marginHorizontal: 50}}>
-                Download Data
-              </Text>
-            </TouchableHighlight>
-
             {
               Object.keys(tasks).length === 1 ? (
                 <Text style={{  color: isDarkMode ? 'gray' : 'gray', textAlign: 'center', marginVertical: 100 }}>Belum Ada Data Tugas pada Dealer Ini</Text>
               ) : (
-                <ScrollView style={{flexGrow: 1}}>
+                <ScrollView style={{flexGrow: 1, marginTop: 20}}>
                     <View>
                         {
                             
@@ -265,7 +278,6 @@ const ListTasks = ({route, navigation}) => {
           + Tambah Tugas
         </Text>
       </TouchableHighlight>
-   
     </View>
   </>
   )

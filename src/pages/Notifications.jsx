@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
 
-import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, useColorScheme} from 'react-native';
+import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, useColorScheme, TouchableOpacity} from 'react-native';
 
 import { getDatabase, ref, child, get } from "firebase/database";
 import FIREBASE from '../config/firebase';
+
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft'
 
 const Notifications = ({route, navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -98,7 +101,7 @@ function formatDate(dateString) {
   
     cardContent: {
       borderRadius: 10,
-      width: 300,
+      width: 320,
       minHeight: 70,
       backgroundColor: "#F8F8F8",
       display: 'flex',
@@ -176,7 +179,16 @@ function formatDate(dateString) {
       shadowRadius: 3.84,
   
       elevation: 5,
-    }
+    },
+
+
+    headerText: {
+      fontSize: 24,
+      fontWeight: '600'
+    },
+    
+
+
   });
 
 
@@ -193,9 +205,41 @@ function formatDate(dateString) {
     }
   }
 
+  function formatTanggal(tanggal) {
+    const [day, month, year] = tanggal.split('-');
+    const monthNames = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+  
+    return `${day} ${monthNames[parseInt(month) - 1]} ${year}`;
+  }
+
   return (
   <>
     <ScrollView>
+    <View style={{ marginHorizontal: 20, marginVertical: 15, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+     <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10}}>
+                <FontAwesomeIcon icon={faChevronLeft} color='black' />
+            </Text>
+    </TouchableOpacity>
+            <View>
+              <Text style={{ ...styles.headerText, color: isDarkMode ? '#212121' : '#212121' }}>Notifikasi</Text>
+            </View>
+
+     </View>
+
       <View style={{ display: 'flex', justifyContent: 'center', paddingBottom: 100, margin: 20}}>
             {
              dues.length === 0 ? (
@@ -219,7 +263,7 @@ function formatDate(dateString) {
                                                           {due['taskTitle']} Mendekati Deadline!
                                                     </Text>
                                                     <Text style={{ color: isDarkMode ? 'gray' : 'gray', marginLeft: 10 }}>
-                                                      H-{getDaysDiff(due)}, deadline {due.dueDate}
+                                                      H-{getDaysDiff(due)}, deadline {formatTanggal(due.dueDate)}
                                                     </Text>
 
                                                    

@@ -1,13 +1,15 @@
-import { View, Text, useColorScheme, StyleSheet, TouchableHighlight, Platform, PermissionsAndroid, Alert } from 'react-native'
+import { View, Text, useColorScheme, StyleSheet, TouchableHighlight, Platform, PermissionsAndroid, Alert, TouchableOpacity } from 'react-native'
 import React, {useState, useEffect} from 'react';
 
 import DatePicker from 'react-native-date-picker';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons/faArrowDown'
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft'
 
 import { getDatabase, ref, get, child, remove } from "firebase/database";
 import FIREBASE from '../../config/firebase';
+
 
 // var RNFS = require('react-native-fs');
 import XLSX from 'xlsx';
@@ -15,7 +17,7 @@ import RNFS from 'react-native-fs';
 
 
 
-const ExportDealerHistory = ({route}) => {
+const ExportDealerHistory = ({route, navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const [fDate, setfDate] = useState(new Date());
@@ -183,18 +185,30 @@ const exportDataToExcel = () => {
 
   return (
     <>
+      <View style={{ marginHorizontal: 20, marginVertical: 15, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10}}>
+                    <FontAwesomeIcon icon={faChevronLeft} color='black' />
+                </Text>
+        </TouchableOpacity>
+        <View>
+              <Text style={{ ...styles.headerText, color: isDarkMode ? '#212121' : '#212121' }}>Mengunduh</Text>
+        </View>
+
+      </View>
+
       <View>
         <View style={{ width: 300 }}>
-          <Text style={{  color: isDarkMode ? 'black' : 'black', marginVertical: 30, marginHorizontal: 20, fontSize: 16 }}>Pilih tanggal tugas yang ingin diunduh dalam satu excel</Text>
+          <Text style={{  color: isDarkMode ? '#212121' : '#212121', marginVertical: 10, marginHorizontal: 20, fontSize: 16 }}>Pilih tanggal tugas yang ingin diunduh dalam satu excel</Text>
 
           <View style={{  marginVertical: 10, marginHorizontal: 20, }}>
             <Text style={{  color: isDarkMode ? 'dimgray' : 'dimgray', fontSize: 16, marginBottom: 10 }}>Tanggal Awal</Text>
-            <DatePicker date={fDate} onDateChange={setfDate} textColor='gray'/>
+            <DatePicker date={fDate} onDateChange={setfDate} textColor='gray' mode='date'/>
           </View>
 
           <View style={{  marginVertical: 10, marginHorizontal: 20, }}>
             <Text style={{  color: isDarkMode ? 'dimgray' : 'dimgray', fontSize: 16, marginBottom: 10 }}>Tanggal Akhir</Text>
-            <DatePicker date={lDate} onDateChange={setLDate} textColor='gray'/>
+            <DatePicker date={lDate} onDateChange={setLDate} textColor='gray' mode='date'/>
           </View>
         </View>
       </View>
@@ -233,7 +247,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
-  }
+  },
+
+  headerText: {
+    fontSize: 24,
+    fontWeight: '600'
+  },
 });
 
 export default ExportDealerHistory

@@ -1,10 +1,12 @@
-import { View, Text, useColorScheme, TouchableHighlight, StyleSheet } from 'react-native'
+import { View, Text, useColorScheme, TouchableHighlight, StyleSheet, TouchableOpacity } from 'react-native'
 import React, {useEffect, useState} from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 import { faKey } from '@fortawesome/free-solid-svg-icons/faKey'
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons/faRightFromBracket'
+import { faInbox } from '@fortawesome/free-solid-svg-icons/faInbox'
+
 
 import FIREBASE from '../../config/firebase';
 import { getDatabase, get, ref, child } from 'firebase/database'
@@ -39,15 +41,18 @@ const Profile = ({navigation, route}) => {
     <View style={styles.home}>
       <View>
         <View style={{ margin: 20 }}>
-            <Text style={{ fontSize: 28, color: 'black', fontWeight: '700' }}>{data.fullname}</Text>
-            <Text  style={{ color: isDarkMode ? 'black' : 'black', fontSize: 16 }}>{data.role}</Text>
+            <Text style={{ fontSize: 28, color: 'black', fontWeight: '700', marginBottom: 10   }}>{data.fullname}</Text>
+            
+              <Text style={{ color: isDarkMode ? 'gray' : 'gray', fontSize: 16, textTransform: 'uppercase' }}>
+                {data.role}
+              </Text>
         </View>
 
         <View>
             <TouchableHighlight underlayColor={'white'} style={styles.actionButton} onPress={() => navigation.navigate('ChangePassword')}>
                 <>
                     <FontAwesomeIcon icon={faKey} color='black' style={{ marginRight: 5 }} />
-                    <Text style={{ color: isDarkMode ? 'black' : 'black'}}>Ganti Kata Kunci</Text>
+                    <Text style={{ color: isDarkMode ? 'black' : 'black', fontWeight: '700'}}>Ganti Kata Kunci</Text>
                 </>
             </TouchableHighlight>
 
@@ -57,8 +62,8 @@ const Profile = ({navigation, route}) => {
               navigation.navigate('Login')
             }}>
                 <>
-                    <FontAwesomeIcon  icon={faRightFromBracket} color='maroon' style={{ marginRight: 5 }} />
-                    <Text style={{ color: 'maroon' }}>Logout</Text>
+                    <FontAwesomeIcon  icon={faRightFromBracket} color='#DD2C32' style={{ marginRight: 5, transform: [{rotate: '180deg'}] }} />
+                    <Text style={{ color: '#DD2C32', fontWeight: '700' }}>Logout</Text>
                 </>
             </TouchableHighlight>
         </View>
@@ -68,20 +73,27 @@ const Profile = ({navigation, route}) => {
       </View>
 
       <View style={styles.navGroup}>
-          <TouchableHighlight style={styles.dealerButton} underlayColor={'#1455A3'} onPress={() => {
-            setActive('dealer')
-            navigation.navigate('Dealer')}}>
-            <Text style={{ color: active === "dealer" ? 'white' : 'black'}}>
-              Dealer
-            </Text>
-          </TouchableHighlight>
+          <TouchableOpacity style={styles.dealerButton} onPress={() => navigation.navigate('Dealer')}>
+            <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: isDarkMode ? 'black' : 'black', }}>
+                <FontAwesomeIcon icon={faInbox} color='#1455A3' />
+              </Text>
+              <Text style={{ color: "#1455A3", backgroundColor: 'white',}}>
+                Dealer
+              </Text>
+            </View>
+          </TouchableOpacity>
 
-          <TouchableHighlight style={styles.profileButton} onPress={() => navigation.navigate('Profile')}>
-          <Text style={{ color: active === "dealer" ? 'white' : 'black'}}>
-              <FontAwesomeIcon icon={faUser} color='white' />
-          </Text>
-            
-          </TouchableHighlight>
+          <TouchableOpacity style={styles.profileButton} underlayColor={'#1455A3'} onPress={() => navigation.navigate('Profile', {'uid': user.uid})}>
+            <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: isDarkMode ? 'black' : 'black', }}>
+                <FontAwesomeIcon icon={faUser} color='white' />
+              </Text>
+              <Text style={{ color: "white", backgroundColor: "#1455A3"}}>
+                  Profil
+                </Text>
+            </View>
+          </TouchableOpacity>
       </View>
 
     </View>
@@ -92,7 +104,8 @@ const styles = StyleSheet.create({
     home: {
       position: 'relative',
       paddingBottom: 100,
-      height: '100%'
+      height: '100%',
+      paddingTop: 30,
     },
   
     cityButton : {
