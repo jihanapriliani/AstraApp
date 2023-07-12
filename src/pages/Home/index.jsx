@@ -15,6 +15,7 @@ import { faCalendarDays } from '@fortawesome/free-regular-svg-icons/faCalendarDa
 
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import HomeHeader from '../../components/HomeHeader';
 
 
 
@@ -72,30 +73,8 @@ const Home = (props) => {
     <ScrollView>
       <View style={styles.home}>
 
-          <View style={{ marginHorizontal: 20, marginVertical: 15, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-            <View>
-              <Text style={{ ...styles.headerText, color: isDarkMode ? '#212121' : '#212121' }}>Dealer</Text>
-            </View>
-
-            <View style={{ display: 'flex', flexDirection: 'row'}}>
-
-            <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
-              <Text style={{ color: isDarkMode ? '' : '',marginRight: 10 }}>
-                <FontAwesomeIcon icon={faBell} size={20} />
-              </Text>
-            </TouchableOpacity>
-
-            {/* <TouchableOpacity>
-              <Text style={{ color: isDarkMode ? '' : '', }}>
-                <FontAwesomeIcon icon={faCalendarDays} size={20} />
-              </Text>
-            </TouchableOpacity> */}
-
-            </View>
-          </View>
+         <HomeHeader navigation={navigation} />
           
-         
-
           <ButtonGroup selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
           
           <Cards navigation={navigation} selectedCity={selectedCity} />

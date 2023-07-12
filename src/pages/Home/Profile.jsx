@@ -26,6 +26,7 @@ const Profile = ({navigation, route}) => {
 
   useEffect(() => {
     const database = ref(getDatabase(FIREBASE));
+    console.log(uid);
     get(child(database, `Users/-NYfCiw76LhxvjdgXkyf/${uid}`)).then((snapshot) => {
       if (snapshot.exists()) {
         setData(snapshot.val());
