@@ -69,7 +69,7 @@ const Home = (props) => {
   navigation.goBack = handleGoBack;
   
   return (
-    <>
+    <View style={{ backgroundColor: "white", height: "100%" }}>
     <ScrollView>
       <View style={styles.home}>
 
@@ -105,7 +105,7 @@ const Home = (props) => {
             </View>
           </TouchableOpacity>
       </View>
-    </>
+    </View>
   )
 }
 

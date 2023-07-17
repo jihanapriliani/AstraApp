@@ -35,7 +35,7 @@ const Login = ({ navigation }) => {
 
     getUid()
     .then((data) => {
-      if(data && userInfo) {
+      if(data && Object.keys(userInfo).length !== 0) {
         navigation.navigate('Dealer');
       } else {
         navigation.navigate('Login');

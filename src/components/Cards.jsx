@@ -61,7 +61,7 @@ const Cards = props => {
   
     cardContent: {
       borderRadius: 10,
-      width: '80%',
+      width: '100%',
       height: 70,
       backgroundColor: "#F8F8F8",
       display: 'flex',

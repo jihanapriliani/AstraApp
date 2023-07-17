@@ -75,22 +75,6 @@ const getCurrentDateTime = () => {
 };
 
 
-//  const convertToDataArray = () => {
-//     const dataArray = [];
-
-//     for (const taskId in data) {
-//         for (const subTaskId in data[taskId]) {
-//             const task = {
-//             idTask: taskId,
-//             subTaskId: subTaskId,
-//             ...data[taskId][subTaskId]
-//             };
-//             dataArray.push(task);
-//         }
-//     }
-//     return(dataArray)
-//  }
-
 const convertDataID = (data) => {
   const convertedData = data.map((item, index) => {
     const {
@@ -261,7 +245,7 @@ const exportDataToExcel = () => {
 
 
   return (
-    <>
+    <View style={{ backgroundColor: "white", height: '100%' }}>
       <View style={{ marginHorizontal: 20, marginVertical: 15, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10}}>
@@ -274,16 +258,16 @@ const exportDataToExcel = () => {
 
       </View>
 
-      <View>
-        <View style={{ width: 300 }}>
-          <Text style={{  color: isDarkMode ? '#212121' : '#212121', marginVertical: 10, marginHorizontal: 20, fontSize: 16 }}>Pilih tanggal tugas yang ingin diunduh dalam satu excel</Text>
+      <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <View style={{ width: '85%' }}>
+          <Text style={{  color: isDarkMode ? '#808080' : '#808080', fontSize: 16, marginVertical: 20 }}>Pilih tanggal tugas yang ingin diunduh dalam satu excel</Text>
 
-          <View style={{  marginVertical: 10, marginHorizontal: 20, }}>
+          <View style={{  width: '85%', marginVertical: 20 }}>
             <Text style={{  color: isDarkMode ? 'dimgray' : 'dimgray', fontSize: 16, marginBottom: 10 }}>Tanggal Awal</Text>
             <DatePicker date={fDate} onDateChange={setfDate} textColor='gray' mode='date'/>
           </View>
 
-          <View style={{  marginVertical: 10, marginHorizontal: 20, }}>
+          <View style={{  width: '85%' }}>
             <Text style={{  color: isDarkMode ? 'dimgray' : 'dimgray', fontSize: 16, marginBottom: 10 }}>Tanggal Akhir</Text>
             <DatePicker date={lDate} onDateChange={setLDate} textColor='gray' mode='date'/>
           </View>
@@ -301,7 +285,7 @@ const exportDataToExcel = () => {
       </TouchableHighlight>
    
     </View>
-    </>
+    </View>
   )
 }
 

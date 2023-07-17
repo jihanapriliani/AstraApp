@@ -85,27 +85,24 @@ const ListTasks = ({route, navigation}) => {
       fontSize: 16,
       padding: 5,
       fontWeight: '700',
-      width: 250,
+      maxWidth: 250,
       color: isDarkMode ? 'black' : 'black',
     },
   
     cardWrapper: {
-      marginHorizontal: 20,
       marginVertical: 10,
       minHeight: 130,
       borderRadius: 20,
       backgroundColor: "#417CC2",
       display: 'flex',
-      width: '90%',
-      paddingTop: 15,
-      // justifyContent: 'center',
+      padding: 15,
       alignItems: 'center',
 
     },
   
     cardContent: {
       borderRadius: 10,
-      width: '90%',
+      width: '100%',
       minHeight: 70,
       backgroundColor: "#F8F8F8",
       display: 'flex',
@@ -113,35 +110,14 @@ const ListTasks = ({route, navigation}) => {
       alignItems: 'flex-start',
       paddingLeft: 10,
       paddingVertical: 5
-      // justifyContent: 'center'
     },
 
     cirle: {
       width: 20,
       height: 20,
       borderRadius: 10,
+      // marginLeft: 5,
       backgroundColor: "#D9D9D9"
-    },
-
-    dotContainer: {
-      height: 20,
-      width: 30,
-      backgroundColor: 'white',
-      marginRight: 5,
-      marginVertical: 10,
-      fontSize: 20,
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 10,
-    },
-
-    dot : {
-      fontSize: 20,
-      lineHeight: 15,
-      color: '#417CC2',
-      fontWeight: 'bold',
     },
 
     cardTitleWrapper: {
@@ -192,9 +168,9 @@ const ListTasks = ({route, navigation}) => {
 
 
   return (
-  <>
+  <View style={{ backgroundColor: "white" }}>
     <ScrollView>
-      <View style={{ marginHorizontal: 20, marginVertical: 15, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+      <View style={{ marginHorizontal: 10, marginVertical: 15, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10}}>
                     <FontAwesomeIcon icon={faChevronLeft} color='black' />
@@ -209,10 +185,10 @@ const ListTasks = ({route, navigation}) => {
 
       </View>
 
-      <View style={{ display: 'flex', justifyContent: 'center', paddingBottom: 100, }}>
-            <Text style={{  color: isDarkMode ? 'black' : 'black', marginLeft: 20, marginVertical: 20, fontSize: 24, width: '85%', fontWeight: '600' }}>{dealer}</Text>
+      <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', paddingBottom: 100 }}>
+            <Text style={{  color: isDarkMode ? 'black' : 'black', marginVertical: 20, fontSize: 24, width: '85%', fontWeight: '600' }}>{dealer}</Text>
             
-            <View style={{ width: '85%', height: 5, marginHorizontal: 20, display: 'flex', 'flexDirection': 'row' }}>
+            <View style={{ width: '85%', height: 5, display: 'flex', 'flexDirection': 'row' }}>
                 <View style={{ flex: listStatus["done"], backgroundColor: "#AED45C" }}></View>
                 <View style={{ flex: listStatus["onprogress"], backgroundColor: "#417CC2" }}></View>
                 <View style={{ flex: listStatus["idle"], backgroundColor: "#FDCA40" }}></View>
@@ -223,8 +199,8 @@ const ListTasks = ({route, navigation}) => {
               Object.keys(tasks).length === 1 ? (
                 <Text style={{  color: isDarkMode ? 'gray' : 'gray', textAlign: 'center', marginVertical: 100 }}>Belum Ada Data Tugas pada Dealer Ini</Text>
               ) : (
-                <ScrollView style={{flexGrow: 1, marginTop: 20}}>
-                    <View>
+                <View style={{flexGrow: 1, marginTop: 20, width: '85%'}}>
+                    <View style={{ width:"100%" }}>
                         {
                             
                             Object.keys(tasks).map((task_key, index) => { 
@@ -234,9 +210,7 @@ const ListTasks = ({route, navigation}) => {
                                       return (
                                         <TouchableHighlight  activeOpacity={0.8}
                                         underlayColor={cardBG} key={task_key} style={{ ...styles.cardWrapper, backgroundColor:  cardBG}} onPress={() => navigation.navigate('DetailTask', { dealer_id: key, task_id: task_key, image_id: tasks[task_key]["uploadedImage"] })}>
-                                          <>
-                                            <View>
-                                                <View style={styles.cardContent}>
+                                        <View style={styles.cardContent}>
                                                   <View  style={styles.cardTitleWrapper}>
                                                     <View style={styles.cirle}></View>
                                                     <Text style={styles.cardTitle}>
@@ -255,18 +229,15 @@ const ListTasks = ({route, navigation}) => {
                                                       {tasks[task_key]['repairActivity']}
                                                   </Text>
 
-                                                </View>
-                                    
-                                              
-                                            </View>
-                                          </>
+                                        </View>
+                                        
                                         </TouchableHighlight>
                                       )
                                     }
                             })
                         }
                     </View>
-                </ScrollView>
+                </View>
               )
             }
           
@@ -280,7 +251,7 @@ const ListTasks = ({route, navigation}) => {
         </Text>
       </TouchableHighlight>
     </View>
-  </>
+  </View>
   )
 }
 
