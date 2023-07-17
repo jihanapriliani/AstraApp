@@ -9,32 +9,23 @@ import Cards from '../../components/Cards';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 import { faInbox } from '@fortawesome/free-solid-svg-icons/faInbox'
-import { faBell } from '@fortawesome/free-regular-svg-icons/faBell'
-import { faCalendarDays } from '@fortawesome/free-regular-svg-icons/faCalendarDays'
-
-
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeHeader from '../../components/HomeHeader';
 
-
-
 const Home = (props) => {
   const isDarkMode = useColorScheme() === 'dark';
-
-  const refNavigation = useNavigation();
 
   const {navigation} = props;
   const [selectedCity, setSelectedCity] = useState("C03");
 
   const [active, setActive] = useState("dealer");
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState("");
 
-    useEffect(() => {
+  useEffect(() => {
       const backAction = () => {
-        // Tidak melakukan apa-apa
-        return true; // Menyatakan bahwa penanganan tombol kembali sudah ditangani
+        return true; 
       };
 
       const backHandler = BackHandler.addEventListener(
@@ -43,11 +34,9 @@ const Home = (props) => {
       );
 
       return () => {
-        // Menghapus listener saat komponen di-unmount
         backHandler.remove();
       };
-    }, []);
-
+  }, []);
 
   useEffect(() => {
    
@@ -60,12 +49,9 @@ const Home = (props) => {
     fetchData();
     
   }, []);
+ 
 
-  const handleGoBack = () => {
-    // Tidak melakukan apa-apa
-  };
-
-  // Mengganti perilaku navigation.goBack() dengan fungsi kosong
+  const handleGoBack = () => {};
   navigation.goBack = handleGoBack;
   
   return (

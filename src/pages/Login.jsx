@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, useColorScheme, Pressable } from 'react-native';
 
 import FIREBASE from '../config/firebase';
-import { getAuth, connectAuthEmulator, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation }) => {
   const isDarkMode = useColorScheme() === 'dark';
-
-  
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

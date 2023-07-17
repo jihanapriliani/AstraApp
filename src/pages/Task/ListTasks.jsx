@@ -168,7 +168,7 @@ const ListTasks = ({route, navigation}) => {
 
 
   return (
-  <View style={{ backgroundColor: "white" }}>
+  <View style={{ backgroundColor: "white", height: "100%" }}>
     <ScrollView>
       <View style={{ marginHorizontal: 10, marginVertical: 15, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
