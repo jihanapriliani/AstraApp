@@ -156,9 +156,10 @@ const DetailTask = ({route, navigation}) => {
     },
   
     imageBox: {
-      width: 250,
-      height: 200,
+      width: 200,
+      height: 150,
       marginTop: 5,
+      marginRight: 5,
       borderRadius: 20
     },
   
@@ -258,7 +259,12 @@ const DetailTask = ({route, navigation}) => {
 
               <View>
                 <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Dokumentasi Temuan</Text>
-                <Image source={{ uri: url }} style={styles.imageBox} />
+                <ScrollView horizontal={true} style={{ marginRight: 50}}>
+                  <Image source={{ uri: url }} style={styles.imageBox} />
+                  <Image source={{ uri: url }} style={styles.imageBox} />
+                  <Image source={{ uri: url }} style={styles.imageBox} />
+
+                </ScrollView>
                
               </View>
         </View>
@@ -293,7 +299,12 @@ const DetailTask = ({route, navigation}) => {
 
               <View>
                 <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Dokumentasi Progress</Text>
-                <Image source={{ uri: findingURL }} style={styles.imageBox} />
+                <ScrollView horizontal={true} style={{ marginRight: 50}}>
+                  <Image source={{ uri: findingURL }} style={styles.imageBox} />
+                  <Image source={{ uri: findingURL }} style={styles.imageBox} />
+                  <Image source={{ uri: findingURL }} style={styles.imageBox} />
+
+                </ScrollView>
                
               </View>
         </View>
