@@ -6,70 +6,84 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  ScrollView,
 } from 'react-native';
 import ImagePicker, { launchImageLibrary } from 'react-native-image-picker';
 
-
-
-
 const ImageUpload = (props) => {
-    const {uploadedImage, setUploadedImage} = props;
-    
-    const selectImage = () => {
-      const options = {
-        maxWidth: 2000,
-        maxHeight: 2000,
-        storageOptions: {
-          skipBackup: true,
-          path: 'images'
-        }
-      };
-      
-      launchImageLibrary(options, response => {
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-        } else if (response.error) {
-          console.log('ImagePicker Error: ', response.error);
-        } else if (response.customButton) {
-          console.log('User tapped custom button: ', response.customButton);
-        } else {
-          const source = { uri: response.assets[0].uri };
-          setUploadedImage(source);
-        }
-      });
+  const { uploadedImages, setUploadedImages } = props;
+
+  const selectImage = () => {
+    const options = {
+      maxWidth: 2000,
+      maxHeight: 2000,
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
     };
 
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log('Pengguna membatalkan pemilihan gambar');
+      } else if (response.error) {
+        console.log('Kesalahan ImagePicker: ', response.error);
+      } else if (response.customButton) {
+        console.log('Pengguna menekan tombol kustom: ', response.customButton);
+      } else {
+        const source = { uri: response.assets[0].uri };
+        setUploadedImages([...uploadedImages, source]);
+      }
+    });
+  };
+
+  const handleUndoImage = (index) => {
+    const newImages = [...uploadedImages];
+    newImages.splice(index, 1);
+    setUploadedImages(newImages);
+  };
 
 
-    const handleUndoImage = () => {
-        setUploadedImage(null);
-    }
+  console.log(uploadedImages);
 
-    return (
-        <SafeAreaView style={styles.container}>
-          <TouchableOpacity style={styles.selectButton} onPress={selectImage}>
-            <Text style={styles.buttonText}>+</Text>
-          </TouchableOpacity>
-          <View style={styles.imageContainer}>
-            {uploadedImage !== null ? (
-              <View>
-                <Image source={{ uri: uploadedImage.uri }} style={styles.imageBox} />
-                <TouchableOpacity style={styles.undoImage} onPress={handleUndoImage}>
-                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 10 }}>X</Text>
-                </TouchableOpacity>
-              </View>    
-            ) : (
-              null
-            )}
-          </View>
-        </SafeAreaView>
-      );
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity style={{...styles.selectButton, width: uploadedImages.length > 1 ? 50 : 100,}} onPress={selectImage}>
+        <Text style={styles.buttonText}>+</Text>
+      </TouchableOpacity>
+        <ScrollView horizontal={true}>
+          {uploadedImages.map((image, index) => (
+            <View key={index}>
+              <Image source={{ uri: image.uri }} style={styles.imageBox} />
+              <TouchableOpacity
+                style={styles.undoImage}
+                onPress={() => handleUndoImage(index)}
+              >
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    color: 'white',
+                    fontSize: 10,
+                  }}
+                >
+                  X
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
+ 
+    </View>
+  );
 };
+
 
 
   const styles = StyleSheet.create({
     container : {
       marginTop: 20,
+      marginLeft: 50,
       display: "flex",
       flexDirection: "row-reverse",
       justifyContent: 'flex-end',
@@ -78,7 +92,7 @@ const ImageUpload = (props) => {
 
     selectButton: {
       borderRadius: 5,
-      width: 100,
+      // width: 100,
       height: 100,
       backgroundColor: '#D3D3D3',
       alignItems: 'center',
@@ -110,7 +124,9 @@ const ImageUpload = (props) => {
     imageBox: {
       width: 100,
       height: 100,
-      marginRight: 5
+      marginRight: 5,
+      marginBottom: 5,
+      backgroundColor: "red"
     },
 
     undoImage: {
@@ -123,8 +139,8 @@ const ImageUpload = (props) => {
       alignItems: 'center',
       justifyContent: 'center',
       position: 'absolute',
-      right: 0,
-      bottom: -5
+      right: 5,
+      bottom: 5
     }
   });
 

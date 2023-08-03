@@ -39,7 +39,7 @@ const AddTask = ({route, navigation}) => {
   const [dueDate, setDueDate] = useState(new Date());
 
   const [selectedStatus, setSelectedStatus] = useState("onprogress");
-  const [uploadedImage, setUploadedImage] = useState(null);
+  const [uploadedImage, setUploadedImage] = useState([]);
 
   const { dealer_id, dealer } = route.params;
 
@@ -51,107 +51,112 @@ const AddTask = ({route, navigation}) => {
   }
 
 
-  const handleAddButtonClicked = () => {
-    console.log(taskTitle, repairActivity, PICDealer, uploadImage.uri, dueDate, findingDate);
-    if(taskTitle && uploadImage) {
-      // && status && repairActivity && uploadedImage != null && PICDealer && findingDate != {} && dueDate != {}
-        const database = getDatabase(FIREBASE);
-
-
-        const tasks = {
-          taskTitle,
-          status: "idle",
-          repairActivity,
-          PICDealer,
-          uploadedImage,
-          findingDate: formatDate(findingDate),
-          dueDate: formatDate(dueDate),
-          httpUrlImage: findingImage
-        };
-
-        const historyTask = {
-          taskTitle,
-          status: "idle",
-          repairActivity,
-          PICDealer,
-          uploadedImage,
-          findingDate: formatDate(findingDate),
-          dueDate: formatDate(dueDate),
-          progressDate: "",
-          httpUrlImage: findingImage,
-          activityProgess: "",
-          progressDate: "",
-          progressImage: "",
-          progressPIC: "",
-        }
-
-
-        const newTaskKey =  push(ref(database, `Tasks/${dealer_id}`)).key;
-        
-        update(ref(database, `Tasks/${dealer_id}/${newTaskKey}`), tasks)
-          .then(data => {
-            // Alert.alert('Success', 'Data Tugas Berhasil Ditambahkan!');
-            
-            uploadImage();
-
-            push(ref(database, `HistoryTasks/${dealer_id}/${newTaskKey}`), historyTask)
-            .then((data) => {
-               Alert.alert('Success', 'Data Tugas Berhasil Ditambahkan!');
-              }).catch(err => console.log(err))
-              
-            navigation.replace('ListTasks', { key: dealer_id, dealer: dealer});
-          })
-          .catch(err => console.log(err))
-
-
-      
-
-    } else {
-      Alert.alert('Error', 'Tolong Pastikan Semua Data Terisi!');
-    }
-  }
-
-  const uploadImage = async () => {
+  const handleAddButtonClicked = async () => {
     try {
-      const storage = getStorage(FIREBASE);
-      const fileName = uploadedImage.uri.substring(uploadedImage.uri.lastIndexOf('/') + 1);
-      const storageRef = refStorage(storage, 'images/' + fileName);
-
-      //convert image to array of bytes
-      const img = await fetch(uploadedImage.uri);
-      const bytes = await img.blob(); 
-      
-      const uploadTask = uploadBytesResumable(storageRef, bytes);
-      
-      uploadTask.on('state_changed', 
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-          switch (snapshot.state) {
-            case 'paused':
-              console.log('Upload is paused');
-              break;
-            case 'running':
-              console.log('Upload is running');
-              break;
+      if(taskTitle && uploadedImage) {
+          const database = getDatabase(FIREBASE);
+  
+          const tasks = {
+            taskTitle,
+            status: "idle",
+            repairActivity,
+            PICDealer,
+            uploadedImage,
+            findingDate: formatDate(findingDate),
+            dueDate: formatDate(dueDate),
+            httpUrlImage: findingImage
+          };
+    
+          const historyTask = {
+            taskTitle,
+            status: "idle",
+            repairActivity,
+            PICDealer,
+            uploadedImage,
+            findingDate: formatDate(findingDate),
+            dueDate: formatDate(dueDate),
+            progressDate: "",
+            httpUrlImage: findingImage,
+            activityProgess: "",
+            progressDate: "",
+            progressImage: "",
+            progressPIC: "",
           }
-        }, 
-        (error) => {
-         console.error(error);
-        }, 
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setfindingImage(downloadURL);
-            console.log('File available at', downloadURL);
-          });
-        }
-      );
+    
+          const newTaskKey =  push(ref(database, `Tasks/${dealer_id}`)).key;
+          
+          update(ref(database, `Tasks/${dealer_id}/${newTaskKey}`), tasks)
+            .then(data => {
+              
+              uploadImage()
+    
+              push(ref(database, `HistoryTasks/${dealer_id}/${newTaskKey}`), historyTask)
+              .then((data) => {
+                 Alert.alert('Success', 'Data Tugas Berhasil Ditambahkan!');
+                }).catch(err => console.log(err))
+                
+              navigation.replace('ListTasks', { key: dealer_id, dealer: dealer});
+            })
+            .catch(err => console.log(err))
+      } else {
+        Alert.alert('Error', 'Tolong Pastikan Semua Data Terisi!');
+      }
     } catch(e) {
-      console.error(e);
+      console.log(e);
     }
 
   }
 
+  const uploadImage = () => {
+    const promises = [];
+    const storage = getStorage(FIREBASE);
+
+    uploadedImage.map(async (image) => {
+      const fileName = image.uri.substring(image.uri.lastIndexOf('/') + 1);
+      const storageRef = refStorage(storage, 'images/' + fileName);
+      
+      const img = await fetch(image.uri);
+      console.log(img);
+      const bytes = await img.blob();
+     
+      const uploadTask = uploadBytesResumable(storageRef, bytes);
+      promises.push(uploadTask);
+
+      uploadTask.on('state_changed', 
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+              case 'paused':
+                console.log('Upload is paused');
+                break;
+              case 'running':
+                console.log('Upload is running');
+                break;
+            }
+          }, 
+          (error) => {
+            console.error(error);
+          }, 
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref)
+              .then((downloadURL) => {
+                console.log('File available at', downloadURL);
+                // Do something with the downloadURL, like storing it in state or database
+              })
+              .catch((error) => {
+                console.error('Error fetching image URL:', error);
+              });
+          }
+        );
+    })
+
+    Promise.all(promises)
+      .then(() => Alert.alert("Berhasil ditambahkan!"))
+      .catch(err => console.log(err))
+  }
+
+  
   const styles = StyleSheet.create({
     view: {
       color: "black",
@@ -298,7 +303,7 @@ const AddTask = ({route, navigation}) => {
 
               <View>
                 <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Dokumentasi Temuan</Text>
-                <ImageUpload uploadedImage={uploadedImage} setUploadedImage={setUploadedImage} />
+                <ImageUpload uploadedImages={uploadedImage} setUploadedImages={setUploadedImage} />
               </View>
           </View>
 
