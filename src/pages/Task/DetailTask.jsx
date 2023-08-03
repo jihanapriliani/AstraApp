@@ -23,11 +23,11 @@ const DetailTask = ({route, navigation}) => {
   const [ data, setData] = useState({});
   const [historyTask, setHistoryTask] = useState({});
 
-  const [url, setUrl] = useState();
-  const [findingURL, setFindingURL] = useState("loading.gif");
+  const [url, setUrl] = useState([]);
+  const [findingURL, setFindingURL] = useState([]);
 
   
-
+  
   useEffect(() => {
       const database = ref(getDatabase(FIREBASE));
 
@@ -40,18 +40,32 @@ const DetailTask = ({route, navigation}) => {
       }).catch((error) => {
         console.error(error);
       });
-
-     
+      
+      
       try {
         const storage = getStorage(FIREBASE);
-        const fileName = image_id.uri.substring(image_id.uri.lastIndexOf('/') + 1);
-        const reference = storageRef(storage, `images/${fileName}`);
-        getDownloadURL(reference).then(url => setUrl(url));
-      } catch(e) {
+       
+      
+        const urlPromises = image_id.map(async (image) => {
+          const fileName = image.uri.substring(image.uri.lastIndexOf('/') + 1);
+          const reference = storageRef(storage, `images/${fileName}`);
+          return getDownloadURL(reference);
+        });
+      
+        Promise.all(urlPromises)
+          .then((downloadURLs) => {
+            setUrl(downloadURLs);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } catch (e) {
         console.log(e);
       }
+
   }, [data, image_id])
 
+ 
 
 
   useEffect(() => {
@@ -70,16 +84,29 @@ const DetailTask = ({route, navigation}) => {
     });
     
 
-   try {
-     const storage = getStorage(FIREBASE);
-     const fileName = historyTask.uploadedImage.uri.substring(historyTask.uploadedImage.uri.lastIndexOf('/') + 1);
-     const reference = storageRef(storage, `images/${fileName}`);
-     getDownloadURL(reference).then(url => setFindingURL(url));
-   } catch(e) {
-    console.log(e);
-   }
+    try {
+      const storage = getStorage(FIREBASE);
+  
+      const urlPromises = historyTask.uploadedImage.map(async (image) => {
+        const fileName = image.uri.substring(image.uri.lastIndexOf('/') + 1);
 
+        const reference = storageRef(storage, `images/${fileName}`);
+        return getDownloadURL(reference);
+      });
+    
+      Promise.all(urlPromises)
+        .then((downloadURLs) => {
+          setFindingURL(downloadURLs);
+          console.log("GAMBAR HISTORY" + findingURL);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (e) {
+      console.log(e);
+    }
   }, [historyTask])
+
 
 
   const handleDelButtonClicked = () => {
@@ -252,22 +279,21 @@ const DetailTask = ({route, navigation}) => {
               </View>
         </View>
 
-        <View style={{ maxWidth: 320, marginLeft: 20,marginTop: 15, display: 'flex', flexDirection: 'row' }}>
-              <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <FontAwesomeIcon icon={faCamera} color='black' />
-              </View>
+        <View style={{ maxWidth: 320, marginLeft: 20, marginTop: 15, display: 'flex', flexDirection: 'row' }}>
+          <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <FontAwesomeIcon icon={faCamera} color='black' />
+          </View>
 
-              <View>
-                <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Dokumentasi Temuan</Text>
-                <ScrollView horizontal={true} style={{ marginRight: 50}}>
-                  <Image source={{ uri: url }} style={styles.imageBox} />
-                  <Image source={{ uri: url }} style={styles.imageBox} />
-                  <Image source={{ uri: url }} style={styles.imageBox} />
-
-                </ScrollView>
-               
-              </View>
+          <View>
+            <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700' }}>Dokumentasi Temuan</Text>
+            <ScrollView horizontal={true} style={{ marginRight: 50, flexDirection: 'row' }}>
+              {url.map((link, index) => (
+                <Image key={index} source={{ uri: link }} style={styles.imageBox} />
+              ))}
+            </ScrollView>
+          </View>
         </View>
+
 
 
         <View style={{ maxWidth: 320, marginLeft: 20,marginTop: 15, display: 'flex', flexDirection: 'row' }}>
@@ -292,22 +318,21 @@ const DetailTask = ({route, navigation}) => {
               </View>
         </View>
 
-        <View style={{ maxWidth: 320, marginLeft: 20,marginTop: 15, display: 'flex', flexDirection: 'row' }}>
-              <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <FontAwesomeIcon icon={faCamera} color='black' />
-              </View>
+        <View style={{ maxWidth: 320, marginLeft: 20, marginTop: 15, display: 'flex', flexDirection: 'row' }}>
+          <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <FontAwesomeIcon icon={faCamera} color='black' />
+          </View>
 
-              <View>
-                <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Dokumentasi Progress</Text>
-                <ScrollView horizontal={true} style={{ marginRight: 50}}>
-                  <Image source={{ uri: findingURL }} style={styles.imageBox} />
-                  <Image source={{ uri: findingURL }} style={styles.imageBox} />
-                  <Image source={{ uri: findingURL }} style={styles.imageBox} />
-
-                </ScrollView>
-               
-              </View>
+          <View>
+            <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700' }}>Dokumentasi Progress</Text>
+            <ScrollView horizontal={true} style={{ marginRight: 50, flexDirection: 'row' }}>
+              {findingURL.map((link, index) => (
+                <Image key={index} source={{ uri: link }} style={styles.imageBox} />
+              ))}
+            </ScrollView>
+          </View>
         </View>
+
 
         <View style={{ maxWidth: 320, marginLeft: 20,marginTop: 15, display: 'flex', flexDirection: 'row' }}>
               <View style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, backgroundColor: '#D3D3D3', width: 25, height: 25, borderRadius: 10, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
