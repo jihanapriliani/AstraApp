@@ -97,7 +97,6 @@ const DetailTask = ({route, navigation}) => {
       Promise.all(urlPromises)
         .then((downloadURLs) => {
           setFindingURL(downloadURLs);
-          console.log("GAMBAR HISTORY" + findingURL);
         })
         .catch((error) => {
           console.log(error);
@@ -287,7 +286,7 @@ const DetailTask = ({route, navigation}) => {
           <View>
             <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700' }}>Dokumentasi Temuan</Text>
             <ScrollView horizontal={true} style={{ marginRight: 50, flexDirection: 'row' }}>
-              {url.map((link, index) => (
+              {findingURL.map((link, index) => (
                 <Image key={index} source={{ uri: link }} style={styles.imageBox} />
               ))}
             </ScrollView>
@@ -326,7 +325,7 @@ const DetailTask = ({route, navigation}) => {
           <View>
             <Text style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700' }}>Dokumentasi Progress</Text>
             <ScrollView horizontal={true} style={{ marginRight: 50, flexDirection: 'row' }}>
-              {findingURL.map((link, index) => (
+              {url.map((link, index) => (
                 <Image key={index} source={{ uri: link }} style={styles.imageBox} />
               ))}
             </ScrollView>

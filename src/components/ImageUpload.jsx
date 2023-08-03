@@ -44,7 +44,7 @@ const ImageUpload = (props) => {
   };
 
 
-  console.log(uploadedImages);
+  console.log("IMAGE UPLOAD" + uploadedImages);
 
   return (
     <View style={styles.container}>

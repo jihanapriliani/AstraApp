@@ -35,7 +35,7 @@ const AddTask = ({route, navigation}) => {
   const [dueDate, setDueDate] = useState(new Date());
 
   const [selectedStatus, setSelectedStatus] = useState();
-  const [uploadedImageProgress, setUploadedImageProgress] = useState(null);
+  const [uploadedImageProgress, setUploadedImageProgress] = useState([]);
 
   const [ data, setData ] = useState({});
   const [ url, setUrl ] = useState("")
@@ -57,17 +57,32 @@ const AddTask = ({route, navigation}) => {
         setTaskTitle(data.taskTitle);
         setRepairActivity(data.repairActivity);
         setPICDealer(data.PICDealer);
-        setSelectedStatus(data.status);   
+        setSelectedStatus(data.status);
+           
+     
         
+        try {
+          const storage = getStorage(FIREBASE);
         
+          const urlPromises = image_id.map(async (image) => {
+            const fileName = image.uri.substring(image.uri.lastIndexOf('/') + 1);
+            const reference = refStorage(storage, `images/${fileName}`);
+            const downloadURL = await getDownloadURL(reference);
+            return {uri: downloadURL};
+          });
         
-        const storage = getStorage(FIREBASE);
-        const fileName = image_id.uri.substring(image_id.uri.lastIndexOf('/') + 1);
-        const reference = refStorage(storage, `images/${fileName}`);
+          Promise.all(urlPromises)
+            .then((downloadURLs) => {
+              setUploadedImageProgress(downloadURLs);
+              console.log("DOWNLOAD URLS" + downloadURLs);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } catch (e) {
+          console.log(e);
+        }
 
-       
-          getDownloadURL(reference).then(url => setUrl(url));
-          setUploadedImageProgress({uri: url});
     }, [])
 
 
@@ -130,51 +145,55 @@ const AddTask = ({route, navigation}) => {
   }
 
   
+  const uploadImage = () => {
+    const promises = [];
+    const storage = getStorage(FIREBASE);
 
-  const uploadImage = async () => {
-    try {
-        if(uploadedImageProgress) {
-          const storage = getStorage(FIREBASE);
-          const fileName = uploadedImageProgress.uri.substring(uploadedImageProgress.uri.lastIndexOf('/') + 1);
-          const storageRef = refStorage(storage, 'images/' + fileName);
-    
-          //convert image to array of bytes
-          const img = await fetch(uploadedImageProgress.uri);
-          const bytes = await img.blob(); 
-          
-          const uploadTask = uploadBytesResumable(storageRef, bytes);
-          
-          uploadTask.on('state_changed', 
-            (snapshot) => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log('Upload is ' + progress + '% done');
-              switch (snapshot.state) {
-                case 'paused':
-                  console.log('Upload is paused');
-                  break;
-                case 'running':
-                  console.log('Upload is running');
-                  break;
-              }
-            }, 
-            (error) => {
-            console.error(error);
-            }, 
-            () => {
-              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                setfindingImage(downloadURL);
-                console.log('File available at', downloadURL);
-              });
+    uploadedImageProgress.map(async (image) => {
+      const fileName = image.uri.substring(image.uri.lastIndexOf('/') + 1);
+      const storageRef = refStorage(storage, 'images/' + fileName);
+      
+      const img = await fetch(image.uri);
+      console.log(img);
+      const bytes = await img.blob();
+     
+      const uploadTask = uploadBytesResumable(storageRef, bytes);
+      promises.push(uploadTask);
+
+      uploadTask.on('state_changed', 
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+              case 'paused':
+                console.log('Upload is paused');
+                break;
+              case 'running':
+                console.log('Upload is running');
+                break;
             }
-          );
-        } else {
-          Alert.alert('Gagal', 'Tolong Masukkan Dokumentasi Progress!');
-        }
-      } catch(e) {
-        console.error(e);
-      }
+          }, 
+          (error) => {
+            console.error(error);
+          }, 
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref)
+              .then((downloadURL) => {
+                console.log('File available at', downloadURL);
+                // Do something with the downloadURL, like storing it in state or database
+              })
+              .catch((error) => {
+                console.error('Error fetching image URL:', error);
+              });
+          }
+        );
+    })
 
+    Promise.all(promises)
+      .then(() => Alert.alert("Berhasil ditambahkan!"))
+      .catch(err => console.log(err))
   }
+
 
   const styles = StyleSheet.create({
     view: {
@@ -324,7 +343,7 @@ const AddTask = ({route, navigation}) => {
 
               <View>
                 <Text  style={{ color: isDarkMode ? 'black' : 'black', marginRight: 10, fontSize: 16, fontWeight: '700'}}>Dokumentasi Progress Perbaikan</Text>
-                <ImageUpload uploadedImage={uploadedImageProgress} setUploadedImage={setUploadedImageProgress} />
+                <ImageUpload uploadedImages={uploadedImageProgress} setUploadedImages={setUploadedImageProgress} />
               </View>
           </View>
 
