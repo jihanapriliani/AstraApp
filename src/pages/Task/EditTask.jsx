@@ -95,7 +95,7 @@ const AddTask = ({route, navigation}) => {
 
   const handleEditButtonClicked = () => {
    
-    if(data.taskTitle && uploadedImageProgress) {
+    if(data.taskTitle && uploadedImageProgress != [] && selectedStatus && PICDealer && repairActivity) {
         const database = getDatabase(FIREBASE);
 
 

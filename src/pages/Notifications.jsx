@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
-import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, useColorScheme, TouchableOpacity, BackHandler} from 'react-native';
+import {View, StyleSheet, Text, Button, Alert, ScrollView, TouchableHighlight, useColorScheme, TouchableOpacity} from 'react-native';
 
 import { getDatabase, ref, child, get } from "firebase/database";
 import FIREBASE from '../config/firebase';
@@ -8,14 +8,15 @@ import FIREBASE from '../config/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft'
 
+
+import notifee from "@notifee/react-native";
+
 const Notifications = ({route, navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
  
   const currentDate = new Date();
   const [tasks, setTasks] = useState([]);
   const [dues, setDues] = useState([]);
-
-  const [dueDealers, setDueDealers] = useState([])
 
   useEffect(() => {
     const database = ref(getDatabase(FIREBASE));
@@ -30,29 +31,14 @@ const Notifications = ({route, navigation}) => {
     });
 
     dueTasks()
-}, [tasks,dues])
-
-  useEffect(() => {
-    const backAction = () => {
-      navigation.goBack();
-      return true; 
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
-
-    return () => {
-      backHandler.remove();
-    };
-  }, []);
+}, [tasks])
 
 
-const dueTasks =  () => {
+
+const dueTasks = async () => {
   const dues = [];
   try {
-      const dueDates = getAllDueDates(tasks);
+      const dueDates = await getAllDueDates(tasks);
       dueDates.forEach(due => {
       const daysDiff = getDaysDiff(due);
       if (daysDiff < 7 && daysDiff > 0) {
@@ -75,17 +61,11 @@ const getDaysDiff = (due) => {
 
 
 
-// const getAllDueDates = (data) => {
-//   return Object.values(data).flatMap((obj) => {
-//     return Object.values(obj).filter((item) => item.dueDate !== undefined)
-//   }
-//   );
-// }
-
-//  
-
-
-
+const getAllDueDates = (data) => {
+  return Object.values(data).flatMap((obj) =>
+          Object.values(obj).filter((item) => item.dueDate !== undefined)
+  );
+}
 
 function formatDate(dateString) {
   if(dateString) {
@@ -95,6 +75,8 @@ function formatDate(dateString) {
     return formattedDate;
   }
 }
+
+
 
 
   const styles = StyleSheet.create({
@@ -258,25 +240,25 @@ function formatDate(dateString) {
                     <View>
                         {
                             
-                            dues.map((due) => {
+                            dues.map((due, indx) => {
                                       const cardBG = getCardBg(due);
                                       return (
-                                        <TouchableHighlight key={due.uploadedImage.uri}>
+                                        <TouchableHighlight key={indx}>
                                           <>
-                                            <View style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                                            <View style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center',}}>
                                                 <View style={styles.cardContent}>
                                                   <View  style={styles.cardTitleWrapper}>
                                                     <View style={{ ...styles.circle, backgroundColor: cardBG }}></View>
                                                   </View>
                                                   <View>
                                                     <Text style={styles.cardTitle}>
-                                                          {due['taskTitle']} Mendekati Deadline! {due.dealer}
+                                                          {due['taskTitle']} Mendekati Deadline!
                                                     </Text>
                                                     <Text style={{ color: isDarkMode ? 'gray' : 'gray', marginLeft: 10 }}>
-                                                      H-{getDaysDiff(due)}, deadline {formatTanggal(due.dueDate)} 
+                                                      H-{getDaysDiff(due)}, deadline {formatTanggal(due.dueDate)}
                                                     </Text>
 
-                                                    
+                                                   
                                                   </View>
 
                                                 </View>

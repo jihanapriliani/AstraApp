@@ -13,6 +13,8 @@ import { faInbox } from '@fortawesome/free-solid-svg-icons/faInbox'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeHeader from '../../components/HomeHeader';
 
+import AutoNotification from '../../components/AutoNotification';
+
 const Home = (props) => {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -56,6 +58,7 @@ const Home = (props) => {
   
   return (
     <View style={{ backgroundColor: "white", height: "100%" }}>
+      <AutoNotification />
     <ScrollView>
       <View style={styles.home}>
 

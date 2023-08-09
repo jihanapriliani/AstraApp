@@ -46,6 +46,8 @@ const Cards = props => {
       backgroundColor: "#417CC2",
       display: 'flex',
       paddingVertical: 15,
+      flexDirection: 'row',
+      justifyContent: 'center',
       alignItems: 'center',
 
       shadowColor: "gray",
