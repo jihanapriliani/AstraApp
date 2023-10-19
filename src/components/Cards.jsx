@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 
 import {getDatabase, ref, get, child} from 'firebase/database';
 import FIREBASE from '../config/firebase';
+import ExportButtonDealer from './ExportButtonDealer';
 
 const Cards = props => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -40,53 +41,44 @@ const Cards = props => {
     cardWrapper: {
       marginHorizontal: 20,
       marginVertical: 10,
-      height: 130,
+      maxHeight: 130,
       borderRadius: 20,
       backgroundColor: "#417CC2",
       display: 'flex',
-      paddingTop: 15,
-      // justifyContent: 'center',
-      alignItems: 'center'
+      paddingVertical: 15,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+
+      shadowColor: "gray",
+      shadowOffset: {
+        width: 0,
+        height: 3,
+      },
+      shadowOpacity: 0.27,
+      shadowRadius: 4.65,
+
+      elevation: 6,
     },
   
     cardContent: {
       borderRadius: 10,
-      width: 280,
+      width: '100%',
       height: 70,
       backgroundColor: "#F8F8F8",
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      paddingLeft: 10
+      padding: 10
       // justifyContent: 'center'
     },
 
     cirle: {
       width: 20,
       height: 20,
+      marginRight: 5,
       borderRadius: 10,
       backgroundColor: "#D9D9D9"
-    },
-
-    dotContainer: {
-      height: 20,
-      width: 30,
-      backgroundColor: 'white',
-      marginRight: 5,
-      marginTop: 10,
-      fontSize: 20,
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 10,
-    },
-
-    dot : {
-      fontSize: 20,
-      lineHeight: 15,
-      color: '#417CC2',
-      fontWeight: 'bold',
     }
   });
 
@@ -99,24 +91,13 @@ const Cards = props => {
                 
                 Object.keys(dealers).map((key, index) =>   (
                     <TouchableHighlight  activeOpacity={0.8}
-                    underlayColor="#417CC2" key={key} style={styles.cardWrapper} onPress={() => navigation.navigate('ListTasks', { key: key, dealer: dealers[key] })}>
+                    underlayColor="#417CC2" key={key} style={styles.cardWrapper} onPress={() => navigation.navigate('ListTasks', { key: key, dealer: dealers[key], dealer_id: key })}>
                         <View>
                             <View style={styles.cardContent}>
                               <View style={styles.cirle}></View>
                                 <Text style={styles.cardTitle}>
                                     {dealers[key]}
                                 </Text>
-                            </View>
-                
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={{ marginLeft: 5, marginTop: 10 }}>Nama Ketua Dealer {index + 1}</Text>
-
-                                <View style={styles.dotContainer}>
-                                  <Text style={styles.dot}>
-                                    ...
-                                  </Text>
-
-                                </View>
                             </View>
                         </View>
                     </TouchableHighlight>
